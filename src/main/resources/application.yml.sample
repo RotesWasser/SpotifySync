@@ -1,0 +1,31 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          spotify:
+            client-id: "<client id>"
+            client-secret: "<client secret>"
+            client-name: "Spotify Sync Test"
+            client-authentication-method: post
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - "user-library-read"
+              - "playlist-modify-private"
+              - "user-read-email"
+
+        provider:
+          spotify:
+            authorization-uri: "https://accounts.spotify.com/authorize"
+            token-uri: "https://accounts.spotify.com/api/token"
+            user-info-uri: "https://api.spotify.com/v1/me"
+            user-name-attribute: "id"
+
+  datasource:
+    url: "<db url>"
+    username: "<username>"
+    password: "<password>"
+
+  liquibase:
+    change-log: "classpath:db/changelog/db.changelog-master.xml"
