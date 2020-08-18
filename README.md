@@ -15,8 +15,13 @@ It's being developed live on stream saturdays 16:30 CEST on my Twitch channel.
 * Customized landing and login pages
 * Containerization
 * Monitoring instrumentation
-* Publishing (figuring out ToS/GDPR/imprint. Fun!)
-
+* ~~Publishing (figuring out ToS/GDPR/imprint. Fun!)~~
+  * After careful consideration, I decided that I will not host this application because of GDPR. In my eyes, it's too
+  much of a risk to take on as an individual, especially since this application will never generate revenue
+  that could balance potential legal fees if I were to screw up some obscure compliance part. Instead, I decided
+  to license it under the AGPLv3 so that you are free to host it yourselves for now. Maybe the law changes in the
+  future, so that I can host it for you. I'm sorry, [please understand](https://www.youtube.com/watch?v=F535Xpu0NDE).
+  
 #### Next Stream
 
 * Figuring out task scheduling
