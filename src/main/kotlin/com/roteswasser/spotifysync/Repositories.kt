@@ -6,3 +6,7 @@ import java.util.*
 interface SpotifySyncUserRepository : CrudRepository<SpotifySyncUser, String> {
 
 }
+
+interface SyncJobRepository : CrudRepository<SpotifySyncUser, String> {
+    
+}

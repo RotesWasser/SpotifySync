@@ -9,12 +9,9 @@
 <body>
 <p>Hello <span th:text="${displayName}">Name</span>!</p>
 
-<p>There's nothing here yet!</p>
+<p>Hi, this is configuration!</p>
 
-<a href="/configuration">Configuration</a>
-
-<a href="/logout">Logout</a>
-
+<p>You currently have <span th:text="${#lists.size(syncJobs)}">Count</span> sync jobs configured</p>
 
 </body>
 
