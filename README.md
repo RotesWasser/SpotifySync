@@ -29,6 +29,9 @@ It's being developed live on stream saturdays 16:30 CEST on my Twitch channel.
 
 ### Completed
 
+### Unscheduled Short Stream 2020-08-20
+* Add `SyncJob`s to the Model, start of config UI
+
 #### Off-Stream
 * Switch to Postgres database
 * Store OAuth tokens in the DB 
