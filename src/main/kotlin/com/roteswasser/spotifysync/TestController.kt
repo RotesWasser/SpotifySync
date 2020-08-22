@@ -1,6 +1,7 @@
 package com.roteswasser.spotifysync
 
 import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
 import org.springframework.stereotype.Controller
@@ -11,16 +12,25 @@ import java.lang.Exception
 
 @Controller
 class TestController(
-        private val authorizedClientService: OAuth2AuthorizedClientService) {
+        private val authorizedClientService: OAuth2AuthorizedClientService,
+        private val userRepository: SpotifySyncUserRepository) {
 
     @GetMapping("/")
-    fun demoMainPage(model: Model, authentication: Authentication): String {
-        val authorizedClient = this.authorizedClientService.loadAuthorizedClient<OAuth2AuthorizedClient>("spotify", authentication.name)
+    fun demoMainPage(model: Model): String {
 
-        val principal = authentication.principal as? OAuth2SpotifySyncUser
-                ?: throw Exception("Somehow got a non-Spotify sync user Principal!")
+        when(val principal = SecurityContextHolder.getContext().authentication.principal) {
+            is OAuth2SpotifySyncUser -> {
+                val user = userRepository.findById(principal.name).get()
 
-        model["displayName"] = principal.user.displayName
+                model["isSignedIn"] = true
+                model["displayName"] = user.displayName
+                model["noSyncJobConfigured"] = user.syncJobs.isEmpty()
+            }
+            else -> {
+                model["isSignedIn"] = false
+            }
+        }
+
 
         return "index"
     }

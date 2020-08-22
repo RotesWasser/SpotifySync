@@ -32,13 +32,12 @@ class SpotifySyncUserService(
             newUser
         }
 
-        return OAuth2SpotifySyncUser(result.authorities, result.attributes, userRequest.clientRegistration.providerDetails.userInfoEndpoint.userNameAttributeName, user)
+        return OAuth2SpotifySyncUser(result.authorities, result.attributes, userRequest.clientRegistration.providerDetails.userInfoEndpoint.userNameAttributeName)
     }
 }
 
 class OAuth2SpotifySyncUser(authorities: MutableCollection<out GrantedAuthority>?,
                             attributes: MutableMap<String, Any>,
-                            name: String,
-                            public val user: SpotifySyncUser) : DefaultOAuth2User(authorities,attributes,name) {
+                            name: String) : DefaultOAuth2User(authorities,attributes,name) {
 
 }

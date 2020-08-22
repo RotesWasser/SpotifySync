@@ -7,13 +7,18 @@
 </head>
 
 <body>
-<p>Hello <span th:text="${displayName}">Name</span>!</p>
+<p th:if="${isSignedIn}">Hello <span th:text="${displayName}">Name</span>! <a href="/logout">Logout</a></p>
+<p th:unless="${isSignedIn}">Hi there, please <a href="/login">Sign in!</a></p>
 
-<p>There's nothing here yet!</p>
+<p>This application allows you to synchronize your last X saved spotify songs to a playlist!</p>
 
-<a href="/configuration">Configuration</a>
+<div th:if="${isSignedIn}">
+    <div th:if="${noSyncJobConfigured}">
+        Hi! You don't yet have a sync job configured. Without doing so, no playlist sync occurs!
+    </div>
 
-<a href="/logout">Logout</a>
+    <a href="/configuration">Configure Sync</a>
+</div>
 
 
 </body>

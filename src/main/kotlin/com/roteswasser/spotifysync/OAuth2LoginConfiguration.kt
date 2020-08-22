@@ -41,6 +41,17 @@ class OAuth2LoginSecurityConfig(private val customUserService: SpotifySyncUserSe
                     customUserType(OAuth2SpotifySyncUser::class.java, "spotify")
                 }
             }
+
+            anonymous {
+
+            }
+
+            authorizeRequests {
+                authorize("/", "anonymous or authenticated")
+                authorize("/login", anonymous)
+
+                authorize(anyRequest, authenticated)
+            }
         }
     }
 
