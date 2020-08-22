@@ -13,6 +13,7 @@ It's being developed live on stream saturdays 16:30 CEST on my Twitch channel.
 * Sync Configuration UI
 * Handling of sync failures (e-mail on token expiry, etc.)
 * Customized landing and login pages
+    * Defining one will also fix the weird auto-login on protected controllers
 * Containerization
 * Monitoring instrumentation
 * ~~Publishing (figuring out ToS/GDPR/imprint. Fun!)~~
