@@ -10,6 +10,8 @@ It's being developed live on stream saturdays 16:30 CEST on my Twitch channel.
 ### Planned
 
 * Synchronizing playlists
+    * Notes
+        * Use AuthorizedClientServiceOAuth2AuthorizedClientManager to access credentials
 * Sync Configuration UI
 * Handling of sync failures (e-mail on token expiry, etc.)
 * Customized landing and login pages

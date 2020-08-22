@@ -7,8 +7,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.web.servlet.invoke
+import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.JdbcOAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.JdbcOAuth2AuthorizedClientService.OAuth2AuthorizedClientHolder
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService
@@ -25,11 +27,18 @@ import java.util.function.Function
 class OAuth2LoginSecurityConfig(private val customUserService: SpotifySyncUserService) : WebSecurityConfigurerAdapter() {
 
     @Bean
-    fun oAuth2AuthorizedClientService(jdbcOperations: JdbcOperations, clientRegistrationRepository: ClientRegistrationRepository) : JdbcOAuth2AuthorizedClientService
-    {
+    fun oAuth2AuthorizedClientService(jdbcOperations: JdbcOperations, clientRegistrationRepository: ClientRegistrationRepository): JdbcOAuth2AuthorizedClientService {
         val service = JdbcOAuth2AuthorizedClientService(jdbcOperations, clientRegistrationRepository)
         service.setAuthorizedClientParametersMapper(PostgresOAuth2AuthorizedClientParametersMapper())
         return service
+    }
+
+    @Bean
+    fun oAuth2AuthorizedClientManager(clientRegistrationRepository: ClientRegistrationRepository,
+                                      oAuth2AuthorizedClientService: JdbcOAuth2AuthorizedClientService): OAuth2AuthorizedClientManager {
+        return AuthorizedClientServiceOAuth2AuthorizedClientManager(
+                clientRegistrationRepository, oAuth2AuthorizedClientService
+        )
     }
 
     override fun configure(http: HttpSecurity) {

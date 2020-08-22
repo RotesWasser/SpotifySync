@@ -1,12 +1,7 @@
 package com.roteswasser.spotifysync
 
 import org.springframework.data.repository.CrudRepository
-import java.util.*
 
-interface SpotifySyncUserRepository : CrudRepository<SpotifySyncUser, String> {
+interface SpotifySyncUserRepository : CrudRepository<SpotifySyncUser, String>
 
-}
-
-interface SyncJobRepository : CrudRepository<SpotifySyncUser, String> {
-    
-}
+interface SyncJobRepository : CrudRepository<SyncJob, String>

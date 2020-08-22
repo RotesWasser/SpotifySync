@@ -1,22 +1,25 @@
 package com.roteswasser.spotifysync
 
-import org.apache.tomcat.util.http.parser.Authorization
-import org.springframework.security.core.Authentication
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
-import java.lang.Exception
+import org.springframework.web.bind.annotation.ModelAttribute
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.servlet.view.RedirectView
 
 @Controller
 class ConfigurationController(
         private val userRepository: SpotifySyncUserRepository,
-        private val syncJobRepository: SyncJobRepository
+        private val syncJobRepository: SyncJobRepository,
+        private val spotifyConnection: SpotifyConnection
 ) {
 
     @GetMapping("/configuration")
-    fun configDisplay(model: Model, authentication: Authentication): String {
-        val principal = authentication.principal as? OAuth2SpotifySyncUser
+    fun configDisplay(model: Model): String {
+
+        val principal = SecurityContextHolder.getContext().authentication.principal as? OAuth2SpotifySyncUser
                 ?: throw Exception("Somehow got a non-Spotify sync user Principal!")
 
         val user = userRepository.findById(principal.name).get()
@@ -26,6 +29,30 @@ class ConfigurationController(
         model["displayName"] = user.displayName
         model["syncJobs"] = user.syncJobs
 
+        model["createSyncJobFormData"] = CreateNewSyncJobFormData(50)
+
         return "configuration"
+    }
+
+    @PostMapping("/configuration")
+    fun createNewSyncJob(@ModelAttribute createSyncJobFormData: CreateNewSyncJobFormData, model: Model): RedirectView {
+        val principal = SecurityContextHolder.getContext().authentication.principal as? OAuth2SpotifySyncUser
+                ?: throw Exception("Somehow got a non-Spotify sync user Principal!")
+
+        val user = userRepository.findById(principal.name).get()
+
+        val createdPlaylist = spotifyConnection.createPlaylistForUser(
+                principalName = user.id,
+                userId = user.id,
+                playlistName = "Most Recent ${createSyncJobFormData.amount} Saved Songs",
+                playlistDescription = "This playlist is managed automatically by the Spotify Sync application. \n" +
+                        " It contains the most recent ${createSyncJobFormData.amount} Songs from your saved songs."
+        )
+
+        val syncJob = SyncJob(createdPlaylist.id, true, createSyncJobFormData.amount, user)
+
+        syncJobRepository.save(syncJob)
+
+        return RedirectView("/configuration")
     }
 }

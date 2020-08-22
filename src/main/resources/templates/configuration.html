@@ -13,6 +13,25 @@
 
 <p>You currently have <span th:text="${#lists.size(syncJobs)}">Count</span> sync jobs configured</p>
 
+<div id="syncJobList">
+    <div>
+        <!-- Existing Sync Jobs -->
+    </div>
+
+    <div>
+        <h5>Create new Sync Job</h5>
+        <!-- New Sync Job -->
+        <form action="#" method="post" th:action="@{/configuration}" th:object="${createSyncJobFormData}">
+
+            <label for="amount">Amount of Songs to synchronize</label>
+            <input id="amount" th:field="*{amount}" type="number">
+
+            <button type="submit">Set up sync job!</button>
+        </form>
+
+    </div>
+</div>
+
 </body>
 
 </html>
