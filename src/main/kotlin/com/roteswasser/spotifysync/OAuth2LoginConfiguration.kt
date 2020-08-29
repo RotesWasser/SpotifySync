@@ -11,6 +11,7 @@ import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2A
 import org.springframework.security.oauth2.client.JdbcOAuth2AuthorizedClientService
 import org.springframework.security.oauth2.client.JdbcOAuth2AuthorizedClientService.OAuth2AuthorizedClientHolder
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService
@@ -22,6 +23,7 @@ import java.sql.Timestamp
 import java.sql.Types
 import java.util.*
 import java.util.function.Function
+
 
 @EnableWebSecurity
 class OAuth2LoginSecurityConfig(private val customUserService: SpotifySyncUserService) : WebSecurityConfigurerAdapter() {
@@ -36,9 +38,16 @@ class OAuth2LoginSecurityConfig(private val customUserService: SpotifySyncUserSe
     @Bean
     fun oAuth2AuthorizedClientManager(clientRegistrationRepository: ClientRegistrationRepository,
                                       oAuth2AuthorizedClientService: JdbcOAuth2AuthorizedClientService): OAuth2AuthorizedClientManager {
-        return AuthorizedClientServiceOAuth2AuthorizedClientManager(
-                clientRegistrationRepository, oAuth2AuthorizedClientService
-        )
+        val authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder.builder()
+                .authorizationCode()
+                .refreshToken()
+                .clientCredentials()
+                .password()
+                .build()
+
+        val manager = AuthorizedClientServiceOAuth2AuthorizedClientManager(clientRegistrationRepository, oAuth2AuthorizedClientService)
+        manager.setAuthorizedClientProvider(authorizedClientProvider)
+        return manager
     }
 
     override fun configure(http: HttpSecurity) {

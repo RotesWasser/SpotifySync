@@ -15,16 +15,21 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="sync_job_pkey"/>
             </column>
 
-            <column name="active" type="BOOL">
-                <constraints nullable="false" />
+            <column name="failed_because_of_invalid_credentials" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+
+
+            <column name="playlist_deleted_by_owner" type="BOOL">
+                <constraints nullable="false"/>
             </column>
 
             <column name="amount_to_sync" type="INTEGER">
-                <constraints nullable="false" />
+                <constraints nullable="false"/>
             </column>
 
             <column name="owner_id" type="VARCHAR(255)">
-                <constraints foreignKeyName="spotify_sync_user.id" nullable="false" />
+                <constraints foreignKeyName="spotify_sync_user.id" nullable="false"/>
             </column>
 
         </createTable>

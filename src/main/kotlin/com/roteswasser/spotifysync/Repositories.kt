@@ -4,4 +4,6 @@ import org.springframework.data.repository.CrudRepository
 
 interface SpotifySyncUserRepository : CrudRepository<SpotifySyncUser, String>
 
-interface SyncJobRepository : CrudRepository<SyncJob, String>
+interface SyncJobRepository : CrudRepository<SyncJob, String> {
+    fun findByOwner(owner: SpotifySyncUser): List<SyncJob>
+}

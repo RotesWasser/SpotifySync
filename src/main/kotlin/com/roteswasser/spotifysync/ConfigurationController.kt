@@ -49,7 +49,12 @@ class ConfigurationController(
                         " It contains the most recent ${createSyncJobFormData.amount} Songs from your saved songs."
         )
 
-        val syncJob = SyncJob(createdPlaylist.id, true, createSyncJobFormData.amount, user)
+        val syncJob = SyncJob(
+                targetPlaylistId = createdPlaylist.id,
+                failedBecauseOfInvalidCredentials = false,
+                playlistDeletedByOwner = false,
+                amountToSync = createSyncJobFormData.amount,
+                owner = user)
 
         syncJobRepository.save(syncJob)
 

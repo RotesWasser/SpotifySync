@@ -16,7 +16,13 @@ data class SpotifySyncUser(
 data class SyncJob(
         @Id
         var targetPlaylistId: String,
-        var active: Boolean,
+
+        // Failure because of expired / invalid credentials
+        var failedBecauseOfInvalidCredentials: Boolean,
+
+        // Checked periodically by a scheduled job. Playlists can be deleted and later
+        // potentially undeleted by support.
+        var playlistDeletedByOwner: Boolean,
         var amountToSync: Int,
         @ManyToOne var owner: SpotifySyncUser
 ) {
