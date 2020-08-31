@@ -26,9 +26,13 @@ class SpotifySyncUserService(
             lookupResult.get()
         } else {
             // We don't have a user, create one
-            val newUser = SpotifySyncUser(result.name, result.attributes["display_name"] as String, emptySet())
-            userRepository.save(newUser)
+            val newUser = SpotifySyncUser(
+                id = result.name,
+                displayName = result.attributes["display_name"] as String,
+                invalidSpotifyCredentials = false,
+                syncJobs = emptySet())
 
+            userRepository.save(newUser)
             newUser
         }
 

@@ -99,4 +99,8 @@ class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2Authori
             val id: String,
             val name: String
     )
+
+    class SpotifyCredentialsException(message: String?) : Exception(message) {
+
+    }
 }

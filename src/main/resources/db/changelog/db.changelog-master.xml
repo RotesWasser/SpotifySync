@@ -8,6 +8,10 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="spotify_sync_user_pkey"/>
             </column>
             <column name="display_name" type="VARCHAR(255)"/>
+            <column name="invalid_spotify_credentials" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+
         </createTable>
 
         <createTable tableName="sync_job">
@@ -15,13 +19,16 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="sync_job_pkey"/>
             </column>
 
-            <column name="failed_because_of_invalid_credentials" type="BOOL">
-                <constraints nullable="false"/>
+            <column name="last_sync" type="TIMESTAMP">
+                <constraints nullable="true" />
             </column>
-
 
             <column name="playlist_deleted_by_owner" type="BOOL">
                 <constraints nullable="false"/>
+            </column>
+
+            <column name="playlist_deletion_time" type="TIMESTAMP">
+                <constraints nullable="true" />
             </column>
 
             <column name="amount_to_sync" type="INTEGER">
