@@ -48,8 +48,11 @@ class ScheduledTasks(
 
     fun doSync(syncJob: SyncJob) {
         // get the most recently saved songs from spotify
+        val latestSongs = spotifyConnection.getMySavedSongs(syncJob.owner.id, syncJob.amountToSync)
 
         // replace target playlist items
+        spotifyConnection.replacePlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, latestSongs.map { it.track.uri })
+        // TODO: Handle case where there are more than 100 songs to sync.
 
         // update SyncJob
         syncJob.apply {

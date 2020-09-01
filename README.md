@@ -34,7 +34,8 @@ It's being developed live saturdays 16:30 CEST on my [Twitch channel](https://ww
 
 * Synchronizing playlists
     * Notes
-        * Use AuthorizedClientServiceOAuth2AuthorizedClientManager to access credentials
+        * Spotify just discards unavailable songs when trying to add them to a playlist via API, which can lead 
+        to there being less songs in a playlist than expected. Maybe build a workaround for that?
 * Sync Configuration UI
     * Management of existing sync jobs
     * ~~Creation of sync jobs~~
