@@ -4,7 +4,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
-import java.lang.Exception
 import java.time.Instant
 import javax.transaction.Transactional
 
@@ -17,7 +16,7 @@ class ScheduledTasks(
 
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 1000)
     @Transactional
     fun syncPlaylists() {
         logger.info("Starting Sync Job!")
