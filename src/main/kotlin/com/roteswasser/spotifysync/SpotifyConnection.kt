@@ -1,5 +1,6 @@
 package com.roteswasser.spotifysync
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -48,7 +49,7 @@ class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2Authori
         }
 
         // TODO: Error handling!
-        return executeRequest<Playlist>(
+        return executeRequest(
                 oAuth2AuthorizedClientManager,
                 principalName,
                 "/users/${userId}/playlists",
@@ -62,7 +63,16 @@ class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2Authori
 
     // region Playlist Item Operations
     fun getPlaylistItems(principalName: String, playlistId: String)
-            = getAllPaginatedItems<Track, PaginatedResponse<Track>>(principalName, "/playlists/${playlistId}/tracks")
+            = getAllPaginatedItems<PlaylistItem, PaginatedResponse<PlaylistItem>>(principalName, "/playlists/${playlistId}/tracks")
+
+    fun deletePlaylistItems(principalName: String, playlistId: String, deletions: List<TrackDeletion>, snapshot_id: String?)
+            = executeRequest<PlaylistUpdateResponse>(
+                oAuth2AuthorizedClientManager,
+                principalName,
+                "/playlists/${playlistId}/tracks",
+                jacksonObjectMapper().writeValueAsString(DeletionRequest(snapshot_id, deletions)),
+                HttpMethod.DELETE
+            )
 
     fun replacePlaylistItems(
             principalName: String,
@@ -149,7 +159,7 @@ class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2Authori
             oAuth2AuthorizedClientManager: OAuth2AuthorizedClientManager,
             principalName: String,
             url: String,
-            body: JSONObject?,
+            body: Any?,
             httpMethod: HttpMethod
     ): T {
         val request = OAuth2AuthorizeRequest
@@ -166,7 +176,9 @@ class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2Authori
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + authorizedClient.accessToken.tokenValue)
                 .let { if (body != null) it.body(BodyInserters.fromValue(body)) else it }
 
-        return webClientRequest.exchange().block()!!.bodyToMono<T>().block()!!
+        val response = webClientRequest.exchange().block()!!
+
+        return response.bodyToMono<T>().block()!!
     }
 
 
@@ -195,8 +207,23 @@ class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2Authori
             val track: Track
     )
 
+    data class PlaylistItem(
+            val track: Track
+    )
+
     data class Track(
             val uri: String
+    )
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    data class DeletionRequest(
+            val snapshot_id: String?,
+            val tracks: List<TrackDeletion>
+    )
+
+    data class TrackDeletion(
+            val uri: String,
+            val positions: List<Int>
     )
 
     data class PlaylistUpdateResponse(
