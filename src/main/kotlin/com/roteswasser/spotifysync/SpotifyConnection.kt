@@ -63,16 +63,25 @@ class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2Authori
 
     // region Playlist Item Operations
     fun getPlaylistItems(principalName: String, playlistId: String)
-            = getAllPaginatedItems<PlaylistItem, PaginatedResponse<PlaylistItem>>(principalName, "/playlists/${playlistId}/tracks")
+        = getAllPaginatedItems<PlaylistItem, PaginatedResponse<PlaylistItem>>(principalName, "/playlists/${playlistId}/tracks")
 
     fun deletePlaylistItems(principalName: String, playlistId: String, deletions: List<TrackDeletion>, snapshot_id: String?)
-            = executeRequest<PlaylistUpdateResponse>(
-                oAuth2AuthorizedClientManager,
-                principalName,
-                "/playlists/${playlistId}/tracks",
-                jacksonObjectMapper().writeValueAsString(DeletionRequest(snapshot_id, deletions)),
-                HttpMethod.DELETE
-            )
+        = executeRequest<PlaylistUpdateResponse>(
+            oAuth2AuthorizedClientManager,
+            principalName,
+            "/playlists/${playlistId}/tracks",
+            jacksonObjectMapper().writeValueAsString(DeletionRequest(snapshot_id, deletions)),
+            HttpMethod.DELETE
+        )
+
+    fun addPlaylistItems(principalName: String, playlistId: String, position: Int, urisToAdd: List<String>, snapshot_id: String?)
+        = executeRequest<PlaylistUpdateResponse>(
+            oAuth2AuthorizedClientManager,
+            principalName,
+            "playlists/${playlistId}/tracks",
+            jacksonObjectMapper().writeValueAsString(AdditionRequest(snapshot_id, position, urisToAdd)),
+            HttpMethod.POST
+        )
 
     fun replacePlaylistItems(
             principalName: String,
@@ -219,6 +228,13 @@ class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2Authori
     data class DeletionRequest(
             val snapshot_id: String?,
             val tracks: List<TrackDeletion>
+    )
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    data class AdditionRequest(
+            val snapshot_id: String?,
+            val position: Int,
+            val uris: List<String>
     )
 
     data class TrackDeletion(
