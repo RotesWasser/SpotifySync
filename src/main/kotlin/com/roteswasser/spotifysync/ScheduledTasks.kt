@@ -1,5 +1,6 @@
 package com.roteswasser.spotifysync
 
+import com.roteswasser.spotifysync.algorithms.computeLCS
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
@@ -16,7 +17,7 @@ class ScheduledTasks(
 
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 1000 * 60)
     @Transactional
     fun syncPlaylists() {
         logger.info("Starting Sync Job!")
@@ -41,27 +42,57 @@ class ScheduledTasks(
                 }
             }
         }
+
+        logger.info("Sync Job Completed!")
     }
 
     fun doSync(syncJobs: List<SyncJob>) = syncJobs.map { doSync(it) }
 
     fun doSync(syncJob: SyncJob) {
         // get the most recently saved songs from spotify
-        val latestSongs = spotifyConnection.getMySavedSongs(syncJob.owner.id, syncJob.amountToSync)
+        val latestSongs = spotifyConnection.getMySavedSongs(syncJob.owner.id, syncJob.amountToSync).take(syncJob.amountToSync)
         val itemsInPlaylist = spotifyConnection.getPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId)
 
-        val first100LatestSongs = latestSongs.take(100)
-        var remainingLatestSongs = latestSongs.drop(100)
+        // TODO: Optimize by checking the lists backwards to avoid having to compute too much
+        val lcs = computeLCS(latestSongs.map{it.track}, itemsInPlaylist.map{it.track})
 
-        // replace target playlist items (at most 100, as Spotify's API does not allow for more in a replace request)
-        spotifyConnection.replacePlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, first100LatestSongs.map { it.track.uri }).snapshot_id
-
-        while (remainingLatestSongs.isNotEmpty()) {
-            val additionsThisRound = remainingLatestSongs.take(100)
-            spotifyConnection.addPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, null, additionsThisRound.map { it.track.uri })
-
-            remainingLatestSongs = remainingLatestSongs.drop(100)
+        // delete items in the playlist that don't belong
+        val deletions = mutableListOf<SpotifyConnection.TrackDeletion>()
+        var lcsHead = 0
+        for (i in itemsInPlaylist.indices) {
+            if (lcsHead < lcs.size && itemsInPlaylist[i].track == lcs[lcsHead]) {
+                lcsHead++
+            } else {
+                deletions.add(SpotifyConnection.TrackDeletion(itemsInPlaylist[i].track.uri, listOf(i)))
+            }
         }
+
+        // Find track addition locations
+        val additions = HashMap<Int, MutableList<SpotifyConnection.Track>>()
+        lcsHead = 0
+        for (i in latestSongs.indices) {
+            val currentTrack = latestSongs[i].track
+
+            if (lcsHead >= lcs.size || currentTrack != lcs[lcsHead]) {
+                if (additions.containsKey(lcsHead))
+                    additions[lcsHead]!!.add(currentTrack)
+                else
+                    additions[lcsHead] = mutableListOf(currentTrack)
+            } else {
+                lcsHead++
+            }
+        }
+
+        // Coalesce into API Requests
+        val additionRequests = additions.map { it -> SpotifyConnection.AdditionRequest(it.key, it.value.map { it.uri }) }
+        val deletionBatches = deletions.chunked(100)
+
+        var snapshotId: String? = null
+        for(deletionBatch in deletionBatches)
+            snapshotId = spotifyConnection.deletePlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, deletionBatch, snapshotId).snapshot_id
+
+        for (additionRequest in additionRequests.reversed())
+            spotifyConnection.addPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, additionRequest.position, additionRequest.uris)
 
         // update SyncJob
         syncJob.apply {
