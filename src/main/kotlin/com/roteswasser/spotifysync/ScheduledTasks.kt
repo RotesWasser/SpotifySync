@@ -84,14 +84,14 @@ class ScheduledTasks(
         }
 
         // Coalesce into API Requests
-        val additionRequests = additions.map { it -> SpotifyConnection.AdditionRequest(it.key, it.value.map { it.uri }) }
+        val additionRequests = additions.map { kv -> kv.value.chunked(100).map { chunk -> SpotifyConnection.AdditionRequest(kv.key, chunk.map { it.uri }) } }
         val deletionBatches = deletions.chunked(100)
 
         var snapshotId: String? = null
         for(deletionBatch in deletionBatches)
             snapshotId = spotifyConnection.deletePlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, deletionBatch, snapshotId).snapshot_id
 
-        for (additionRequest in additionRequests.reversed())
+        for (additionRequest in additionRequests.reversed().flatten())
             spotifyConnection.addPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, additionRequest.position, additionRequest.uris)
 
         // update SyncJob
