@@ -1,6 +1,6 @@
 package com.roteswasser.spotifysync.controllers
 
-import com.roteswasser.spotifysync.OAuth2SpotifySyncUser
+import com.roteswasser.spotifysync.oauth.OAuth2SpotifySyncUser
 import com.roteswasser.spotifysync.SpotifyConnection
 import com.roteswasser.spotifysync.entities.SyncJob
 import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
