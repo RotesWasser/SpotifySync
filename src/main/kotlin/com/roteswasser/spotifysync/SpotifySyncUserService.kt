@@ -1,6 +1,7 @@
 package com.roteswasser.spotifysync
 
 import com.roteswasser.spotifysync.entities.SpotifySyncUser
+import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest
