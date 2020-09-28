@@ -1,18 +1,9 @@
-package com.roteswasser.spotifysync
+package com.roteswasser.spotifysync.entities
 
 import java.time.Instant
 import javax.persistence.Entity
 import javax.persistence.Id
 import javax.persistence.ManyToOne
-import javax.persistence.OneToMany
-
-@Entity
-data class SpotifySyncUser(
-    @Id var id: String,
-    var displayName: String,
-    var invalidSpotifyCredentials: Boolean,
-    @OneToMany(mappedBy = "owner") var syncJobs: Set<SyncJob>
-)
 
 @Entity
 data class SyncJob(

@@ -1,5 +1,7 @@
 package com.roteswasser.spotifysync
 
+import com.roteswasser.spotifysync.entities.SpotifySyncUser
+import com.roteswasser.spotifysync.entities.SyncJob
 import org.springframework.data.repository.CrudRepository
 
 interface SpotifySyncUserRepository : CrudRepository<SpotifySyncUser, String>

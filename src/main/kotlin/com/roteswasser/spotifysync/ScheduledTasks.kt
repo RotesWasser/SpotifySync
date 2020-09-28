@@ -1,6 +1,7 @@
 package com.roteswasser.spotifysync
 
 import com.roteswasser.spotifysync.algorithms.computeLCS
+import com.roteswasser.spotifysync.entities.SyncJob
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled

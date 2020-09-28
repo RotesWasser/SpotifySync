@@ -1,5 +1,6 @@
 package com.roteswasser.spotifysync
 
+import com.roteswasser.spotifysync.entities.SyncJob
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
