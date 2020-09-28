@@ -1,5 +1,6 @@
-package com.roteswasser.spotifysync
+package com.roteswasser.spotifysync.controllers
 
+import com.roteswasser.spotifysync.OAuth2SpotifySyncUser
 import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
@@ -8,7 +9,7 @@ import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class TestController(
+class IndexController(
         private val userRepository: SpotifySyncUserRepository) {
 
     @GetMapping("/")

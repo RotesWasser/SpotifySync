@@ -1,5 +1,7 @@
-package com.roteswasser.spotifysync
+package com.roteswasser.spotifysync.controllers
 
+import com.roteswasser.spotifysync.OAuth2SpotifySyncUser
+import com.roteswasser.spotifysync.SpotifyConnection
 import com.roteswasser.spotifysync.entities.SyncJob
 import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
 import com.roteswasser.spotifysync.repositories.SyncJobRepository
@@ -64,4 +66,8 @@ class ConfigurationController(
 
         return RedirectView("/configuration")
     }
+
+    data class CreateNewSyncJobFormData(
+            var amount: Int
+    )
 }
