@@ -1,5 +1,6 @@
 package com.roteswasser.spotifysync
 
+import com.roteswasser.spotifysync.algorithms.ListDiff
 import com.roteswasser.spotifysync.algorithms.computeLCS
 import com.roteswasser.spotifysync.entities.SyncJob
 import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
@@ -53,48 +54,20 @@ class ScheduledTasks(
 
     fun doSync(syncJob: SyncJob) {
         // get the most recently saved songs from spotify
-        val latestSongs = spotifyConnection.getMySavedSongs(syncJob.owner.id, syncJob.amountToSync).take(syncJob.amountToSync)
-        val itemsInPlaylist = spotifyConnection.getPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId)
+        val latestSongs = spotifyConnection.getMySavedSongs(syncJob.owner.id, syncJob.amountToSync).map { it.track }
+        val itemsInPlaylist = spotifyConnection.getPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId).map { it.track }
 
-        // TODO: Optimize by checking the lists backwards to avoid having to compute too much
-        val lcs = computeLCS(latestSongs.map{it.track}, itemsInPlaylist.map{it.track})
-
-        // delete items in the playlist that don't belong
-        val deletions = mutableListOf<SpotifyConnection.TrackDeletion>()
-        var lcsHead = 0
-        for (i in itemsInPlaylist.indices) {
-            if (lcsHead < lcs.size && itemsInPlaylist[i].track == lcs[lcsHead]) {
-                lcsHead++
-            } else {
-                deletions.add(SpotifyConnection.TrackDeletion(itemsInPlaylist[i].track.uri, listOf(i)))
-            }
-        }
-
-        // Find track addition locations
-        val additions = HashMap<Int, MutableList<SpotifyConnection.Track>>()
-        lcsHead = 0
-        for (i in latestSongs.indices) {
-            val currentTrack = latestSongs[i].track
-
-            if (lcsHead >= lcs.size || currentTrack != lcs[lcsHead]) {
-                if (additions.containsKey(lcsHead))
-                    additions[lcsHead]!!.add(currentTrack)
-                else
-                    additions[lcsHead] = mutableListOf(currentTrack)
-            } else {
-                lcsHead++
-            }
-        }
+        val playlistDiff = ListDiff.createFrom(itemsInPlaylist, latestSongs)
 
         // Coalesce into API Requests
-        val additionRequests = additions.map { kv -> kv.value.chunked(100).map { chunk -> SpotifyConnection.AdditionRequest(kv.key, chunk.map { it.uri }) } }
-        val deletionBatches = deletions.chunked(100)
+        val additionRequests = playlistDiff.additions.map { addition -> addition.elements.chunked(100).map { chunk -> SpotifyConnection.AdditionRequest(addition.position, chunk.map { it.uri }) } }.flatten()
+        val deletionBatches = playlistDiff.removals.map { SpotifyConnection.TrackDeletion(it.element.uri, listOf(it.position)) }.chunked(100)
 
         var snapshotId: String? = null
         for(deletionBatch in deletionBatches)
             snapshotId = spotifyConnection.deletePlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, deletionBatch, snapshotId).snapshot_id
 
-        for (additionRequest in additionRequests.reversed().flatten())
+        for (additionRequest in additionRequests.reversed())
             spotifyConnection.addPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, additionRequest.position, additionRequest.uris)
 
         // update SyncJob
@@ -124,6 +97,6 @@ class ScheduledTasks(
     }
 
     private fun notifyUserAboutDeadJobs(newlyFailedJobs: List<SyncJob>) {
-        TODO("Not yet implemented")
+        // TODO
     }
 }
