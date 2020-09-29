@@ -6,12 +6,13 @@ spring:
           spotify:
             client-id: "<client id>"
             client-secret: "<client secret>"
-            client-name: "Spotify Sync Test"
+            client-name: "Spotify"
             client-authentication-method: post
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:
               - "user-library-read"
+              - "playlist-read-private"
               - "playlist-modify-private"
               - "user-read-email"
 
