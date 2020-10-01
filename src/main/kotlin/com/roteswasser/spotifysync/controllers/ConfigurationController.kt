@@ -2,6 +2,7 @@ package com.roteswasser.spotifysync.controllers
 
 import com.roteswasser.spotifysync.oauth.OAuth2SpotifySyncUser
 import com.roteswasser.spotifysync.SpotifyConnection
+import com.roteswasser.spotifysync.SpotifyConnectionBuilder
 import com.roteswasser.spotifysync.entities.SyncJob
 import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
 import com.roteswasser.spotifysync.repositories.SyncJobRepository
@@ -18,7 +19,7 @@ import org.springframework.web.servlet.view.RedirectView
 class ConfigurationController(
         private val userRepository: SpotifySyncUserRepository,
         private val syncJobRepository: SyncJobRepository,
-        private val spotifyConnection: SpotifyConnection
+        private val spotifyConnectionBuilder: SpotifyConnectionBuilder
 ) {
 
     @GetMapping("/configuration")
@@ -45,10 +46,9 @@ class ConfigurationController(
                 ?: throw Exception("Somehow got a non-Spotify sync user Principal!")
 
         val user = userRepository.findById(principal.name).get()
+        val spotifyConnection = spotifyConnectionBuilder.getClient(user.id)
 
-        val createdPlaylist = spotifyConnection.createPlaylistForUser(
-                principalName = user.id,
-                userId = user.id,
+        val createdPlaylist = spotifyConnection.createPlaylistForMyself(
                 playlistName = "Most Recent ${createSyncJobFormData.amount} Saved Songs",
                 playlistDescription = "This playlist is managed automatically by the Spotify Sync application. \n" +
                         " It contains the most recent ${createSyncJobFormData.amount} Songs from your saved songs."

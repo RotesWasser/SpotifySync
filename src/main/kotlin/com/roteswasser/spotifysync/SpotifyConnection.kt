@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -20,7 +21,9 @@ import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.Instant
 
 @Component
-class SpotifyConnection(@Autowired private val oAuth2AuthorizedClientManager: OAuth2AuthorizedClientManager) {
+class SpotifyConnectionBuilder(
+        @Autowired private val oAuth2AuthorizedClientManager: OAuth2AuthorizedClientManager,
+        @Value("\${spotifysync.apiendpoint}") private val apiEndpoint: String) {
 
     private val client = WebClient.builder()
             .exchangeStrategies(
@@ -32,19 +35,36 @@ class SpotifyConnection(@Autowired private val oAuth2AuthorizedClientManager: OA
                             }
                             .build()
             )
-            .baseUrl("https://api.spotify.com/v1/")
+            .baseUrl(apiEndpoint)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build()
 
+    fun getClient(principalName: String): SpotifyConnection {
+        return SpotifyConnection(oAuth2AuthorizedClientManager, client, principalName)
+    }
+}
+
+class SpotifyConnection(
+        private val oAuth2AuthorizedClientManager: OAuth2AuthorizedClientManager,
+        private val client: WebClient,
+        private val principalName: String
+) {
+
     // region Saved Songs Operations
-    fun getMySavedSongs(principalName: String, limit: Int) = getPaginatedItems<SavedTrack, PaginatedResponse<SavedTrack>>(principalName, limit, "/me/tracks?offset=%d&limit=50")
+    fun getMySavedSongs(limit: Int) = getPaginatedItems<SavedTrack, PaginatedResponse<SavedTrack>>(principalName, limit, "/me/tracks?offset=%d&limit=50")
     // endregion
 
     // region Playlist Management Operations
-    fun getMyPlaylists(principalName: String): List<Playlist> = getAllPaginatedItems(principalName, "/me/playlists?offset=0&limit=20")
+    fun getMyPlaylists(): List<Playlist> = getAllPaginatedItems(principalName, "/me/playlists?offset=0&limit=20")
+
+    fun createPlaylistForMyself(
+            playlistName: String,
+            playlistDescription: String,
+            public: Boolean = false,
+            collaborative: Boolean = false
+    ) = createPlaylistForUser(principalName, playlistName, playlistDescription, public, collaborative)
 
     fun createPlaylistForUser(
-            principalName: String,
             userId: String,
             playlistName: String,
             playlistDescription: String,
@@ -72,9 +92,9 @@ class SpotifyConnection(@Autowired private val oAuth2AuthorizedClientManager: OA
 
 
     // region Playlist Item Operations
-    fun getPlaylistItems(principalName: String, playlistId: String) = getAllPaginatedItems<PlaylistItem, PaginatedResponse<PlaylistItem>>(principalName, "/playlists/${playlistId}/tracks")
+    fun getPlaylistItems(playlistId: String) = getAllPaginatedItems<PlaylistItem, PaginatedResponse<PlaylistItem>>(principalName, "/playlists/${playlistId}/tracks")
 
-    fun deletePlaylistItems(principalName: String, playlistId: String, deletions: List<TrackDeletion>, snapshot_id: String?) = executeRequest<PlaylistUpdateResponse>(
+    fun deletePlaylistItems(playlistId: String, deletions: List<TrackDeletion>, snapshot_id: String?) = executeRequest<PlaylistUpdateResponse>(
             oAuth2AuthorizedClientManager,
             principalName,
             "/playlists/${playlistId}/tracks",
@@ -82,7 +102,7 @@ class SpotifyConnection(@Autowired private val oAuth2AuthorizedClientManager: OA
             HttpMethod.DELETE
     )
 
-    fun addPlaylistItems(principalName: String, playlistId: String, position: Int?, urisToAdd: List<String>) = executeRequest<String>(
+    fun addPlaylistItems(playlistId: String, position: Int?, urisToAdd: List<String>) = executeRequest<String>(
             oAuth2AuthorizedClientManager,
             principalName,
             "playlists/${playlistId}/tracks",
@@ -91,7 +111,6 @@ class SpotifyConnection(@Autowired private val oAuth2AuthorizedClientManager: OA
     )
 
     fun replacePlaylistItems(
-            principalName: String,
             playlistId: String,
             itemURIs: List<String>
     ): PlaylistUpdateResponse {

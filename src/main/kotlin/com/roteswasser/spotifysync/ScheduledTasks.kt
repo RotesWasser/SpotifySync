@@ -16,7 +16,7 @@ import javax.transaction.Transactional
 class ScheduledTasks(
         private val syncJobRepository: SyncJobRepository,
         private val userRepository: SpotifySyncUserRepository,
-        private val spotifyConnection: SpotifyConnection
+        private val spotifyConnectionBuilder: SpotifyConnectionBuilder
 ) {
 
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
@@ -27,12 +27,14 @@ class ScheduledTasks(
         logger.info("Starting Sync Job!")
 
         for (user in userRepository.findAll()) {
+            val spotifyConnection = spotifyConnectionBuilder.getClient(user.id)
+
             try {
-                val playlistIds = spotifyConnection.getMyPlaylists(user.id).map { it.id }
+                val playlistIds = spotifyConnection.getMyPlaylists().map { it.id }
 
                 // Determine living sync jobs, i.e. the playlists still registered to the users account
                 val livingSyncJobs = user.syncJobs.filter { it.targetPlaylistId in playlistIds }
-                doSync(livingSyncJobs)
+                doSync(spotifyConnection, livingSyncJobs)
 
                 // Determine dead sync jobs, those that aren't registered to the users account anymore
                 val deadSyncJobs = user.syncJobs.filter { it.targetPlaylistId !in playlistIds }
@@ -50,12 +52,12 @@ class ScheduledTasks(
         logger.info("Sync Job Completed!")
     }
 
-    fun doSync(syncJobs: List<SyncJob>) = syncJobs.map { doSync(it) }
+    fun doSync(spotifyConnection: SpotifyConnection, syncJobs: List<SyncJob>) = syncJobs.map { doSync(spotifyConnection, it) }
 
-    fun doSync(syncJob: SyncJob) {
+    fun doSync(spotifyConnection: SpotifyConnection, syncJob: SyncJob) {
         // get the most recently saved songs from spotify
-        val latestSongs = spotifyConnection.getMySavedSongs(syncJob.owner.id, syncJob.amountToSync).map { it.track }
-        val itemsInPlaylist = spotifyConnection.getPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId).map { it.track }
+        val latestSongs = spotifyConnection.getMySavedSongs(syncJob.amountToSync).map { it.track }
+        val itemsInPlaylist = spotifyConnection.getPlaylistItems(syncJob.targetPlaylistId).map { it.track }
 
         val playlistDiff = ListDiff.createFrom(itemsInPlaylist, latestSongs)
 
@@ -66,11 +68,11 @@ class ScheduledTasks(
         // Execute deletions
         var snapshotId: String? = null
         for(deletionBatch in deletionBatches)
-            snapshotId = spotifyConnection.deletePlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, deletionBatch, snapshotId).snapshot_id
+            snapshotId = spotifyConnection.deletePlaylistItems(syncJob.targetPlaylistId, deletionBatch, snapshotId).snapshot_id
 
         // Execute additions
         for (additionRequest in additionRequests.reversed())
-            spotifyConnection.addPlaylistItems(syncJob.owner.id, syncJob.targetPlaylistId, additionRequest.position, additionRequest.uris)
+            spotifyConnection.addPlaylistItems(syncJob.targetPlaylistId, additionRequest.position, additionRequest.uris)
 
         // update SyncJob
         syncJob.apply {

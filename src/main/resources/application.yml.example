@@ -30,3 +30,6 @@ spring:
 
   liquibase:
     change-log: "classpath:db/changelog/db.changelog-master.xml"
+
+spotifysync:
+  apiendpoint: "https://api.spotify.com/v1/"
