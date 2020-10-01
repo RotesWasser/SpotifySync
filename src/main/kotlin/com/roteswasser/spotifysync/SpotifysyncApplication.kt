@@ -9,9 +9,6 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
 @SpringBootApplication
 @EnableScheduling
 class SpotifysyncApplication {
-
-    @Bean
-    fun spotifyConnectionBean(oAuth2AuthorizedClientManager: OAuth2AuthorizedClientManager) = SpotifyConnection(oAuth2AuthorizedClientManager)
 }
 
 fun main(args: Array<String>) {

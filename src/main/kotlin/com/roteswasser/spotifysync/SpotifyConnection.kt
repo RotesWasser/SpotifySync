@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
@@ -11,14 +12,15 @@ import org.springframework.http.MediaType
 import org.springframework.http.codec.ClientCodecConfigurer
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
+import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
 import java.time.Instant
 
-
-class SpotifyConnection(private val oAuth2AuthorizedClientManager: OAuth2AuthorizedClientManager) {
+@Component
+class SpotifyConnection(@Autowired private val oAuth2AuthorizedClientManager: OAuth2AuthorizedClientManager) {
 
     private val client = WebClient.builder()
             .exchangeStrategies(
