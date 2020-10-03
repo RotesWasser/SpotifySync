@@ -49,6 +49,8 @@ class OAuth2LoginSecurityConfig(private val customUserService: SpotifySyncUserSe
                     userService = customUserService as OAuth2UserService<OAuth2UserRequest, OAuth2User>
                     customUserType(OAuth2SpotifySyncUser::class.java, "spotify")
                 }
+
+                loginPage = "/login"
             }
 
             anonymous {
