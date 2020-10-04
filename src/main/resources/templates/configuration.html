@@ -2,14 +2,14 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <title>Spotify Sync</title>
-</head>
+<head th:insert="fragments/common :: commonHead"></head>
 
 <body>
-<p>Hello <span th:text="${displayName}">Name</span>!</p>
-
-<p>Hi, this is configuration!</p>
+<div th:replace="fragments/header :: header">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">SpotifySync</a>
+    </nav>
+</div>
 
 <p>You currently have <span th:text="${#lists.size(syncJobs)}">Count</span> sync jobs configured</p>
 
@@ -53,6 +53,6 @@
     </div>
 </div>
 
+<!--/*/ <th:block th:replace="fragments/common :: commonScripts"></th:block> /*/-->
 </body>
-
 </html>

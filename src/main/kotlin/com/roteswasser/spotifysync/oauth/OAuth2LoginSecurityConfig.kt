@@ -59,6 +59,7 @@ class OAuth2LoginSecurityConfig(private val customUserService: SpotifySyncUserSe
 
             authorizeRequests {
                 authorize("/", "anonymous or authenticated")
+                authorize("/webjars/**", "anonymous or authenticated")
                 authorize("/login", anonymous)
 
                 authorize(anyRequest, authenticated)

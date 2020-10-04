@@ -2,13 +2,14 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <title>Spotify Sync</title>
-</head>
+<head th:insert="fragments/common :: commonHead"></head>
 
 <body>
-<p th:if="${isSignedIn}">Hello <span th:text="${displayName}">Name</span>! <a href="/logout">Logout</a></p>
-<p th:unless="${isSignedIn}">Hi there, please <a href="/login">Sign in!</a></p>
+<div th:replace="fragments/header :: header">
+    <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">SpotifySync</a>
+    </nav>
+</div>
 
 <p>This application allows you to synchronize your last X saved spotify songs to a playlist!</p>
 
@@ -16,10 +17,9 @@
     <div th:if="${noSyncJobConfigured}">
         Hi! You don't yet have a sync job configured. Without doing so, no playlist sync occurs!
     </div>
-
-    <a href="/configuration">Configure Sync</a>
 </div>
 
+<!--/*/ <th:block th:replace="fragments/common :: commonScripts"></th:block> /*/-->
 
 </body>
 

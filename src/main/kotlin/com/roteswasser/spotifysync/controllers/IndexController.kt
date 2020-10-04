@@ -9,26 +9,14 @@ import org.springframework.ui.set
 import org.springframework.web.bind.annotation.GetMapping
 
 @Controller
-class IndexController(
-        private val userRepository: SpotifySyncUserRepository) {
+class IndexController(userRepository: SpotifySyncUserRepository) : SpotifySyncCustomController(userRepository) {
 
     @GetMapping("/")
     fun demoMainPage(model: Model): String {
 
-        when(val principal = SecurityContextHolder.getContext().authentication.principal) {
-            is OAuth2SpotifySyncUser -> {
-                val user = userRepository.findById(principal.name).get()
-
-                model["isSignedIn"] = true
-                model["displayName"] = user.displayName
-                model["noSyncJobConfigured"] = user.syncJobs.isEmpty()
-            }
-            else -> {
-                model["isSignedIn"] = false
-            }
-        }
-
+        populateHeaderFields(model)
 
         return "index"
     }
+
 }

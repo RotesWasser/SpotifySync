@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="displayName" type="java.lang.String"*/-->
+<!--/*@thymesVar id="isSignedIn" type="java.lang.Boolean"*/-->
+<body>
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark" th:fragment="header">
+    <a class="navbar-brand" href="/">SpotifySync</a>
+
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"
+                th:class="'nav-item ' + ${#httpServletRequest.requestURI == '/' ? 'active' : ''}">
+                <a class="nav-link" href="/"> Home</a>
+            </li>
+            <li class="nav-item"
+                th:class="'nav-item ' + ${#httpServletRequest.requestURI == '/configuration' ? 'active' : ''}">
+                <a class="nav-link" href="/configuration">Configuration</a>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item"
+                th:class="'nav-item ' + ${#httpServletRequest.requestURI == '/login' ? 'active' : ''}">
+            <a th:if="${isSignedIn}" class="nav-link" href="/logout">
+                    Logout <span th:text="${displayName}">Name</span>
+                </a>
+                <a th:unless="${isSignedIn}" class="nav-link" href="/login">
+                    Login
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+
+</body>
+</html>

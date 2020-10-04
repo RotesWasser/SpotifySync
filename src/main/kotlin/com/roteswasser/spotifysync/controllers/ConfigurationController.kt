@@ -17,24 +17,21 @@ import org.springframework.web.servlet.view.RedirectView
 
 @Controller
 class ConfigurationController(
-        private val userRepository: SpotifySyncUserRepository,
+        userRepository: SpotifySyncUserRepository,
         private val syncJobRepository: SyncJobRepository,
         private val spotifyConnectionBuilder: SpotifyConnectionBuilder
-) {
+) : SpotifySyncCustomController(userRepository) {
 
     @GetMapping("/configuration")
     fun configDisplay(model: Model): String {
+        populateHeaderFields(model)
 
         val principal = SecurityContextHolder.getContext().authentication.principal as? OAuth2SpotifySyncUser
                 ?: throw Exception("Somehow got a non-Spotify sync user Principal!")
 
         val user = userRepository.findById(principal.name).get()
 
-
-
-        model["displayName"] = user.displayName
         model["syncJobs"] = user.syncJobs
-
         model["createSyncJobFormData"] = CreateNewSyncJobFormData(50)
 
         return "configuration"
