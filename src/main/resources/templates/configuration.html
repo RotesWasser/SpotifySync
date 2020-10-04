@@ -16,6 +16,27 @@
 <div id="syncJobList">
     <div>
         <!-- Existing Sync Jobs -->
+        <table>
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Amount</td>
+                    <td>Last sync time</td>
+                    <td>Target Deleted?</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="syncJob : ${syncJobs}">
+                    <!-- Errors here happen because of https://youtrack.jetbrains.com/issue/IDEA-132738
+                         still applying to iteration -->
+                    <td th:text="${syncJob.playlistName}">Most recent XXX Songs placeholder</td>
+                    <td th:text="${syncJob.amountToSync}">250</td>
+                    <td th:text="${syncJob.lastSync}">5 minutes ago</td>
+                    <td th:text="${syncJob.playlistDeletedByOwner}">false</td>
+                </tr>
+            </tbody>
+        </table>
+
     </div>
 
     <div>

@@ -56,6 +56,7 @@ class ConfigurationController(
 
         val syncJob = SyncJob(
                 targetPlaylistId = createdPlaylist.id,
+                playlistName = createdPlaylist.name,
                 amountToSync = createSyncJobFormData.amount,
                 lastSync = null,
                 playlistDeletedByOwner = false,

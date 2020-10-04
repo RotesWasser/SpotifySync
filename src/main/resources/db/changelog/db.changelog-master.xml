@@ -19,6 +19,10 @@
                 <constraints nullable="false" primaryKey="true" primaryKeyName="sync_job_pkey"/>
             </column>
 
+            <column name="playlist_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="last_sync" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>

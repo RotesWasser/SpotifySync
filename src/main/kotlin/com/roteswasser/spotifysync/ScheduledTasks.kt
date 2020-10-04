@@ -30,6 +30,8 @@ class ScheduledTasks(
             val spotifyConnection = spotifyConnectionBuilder.getClient(user.id)
 
             try {
+                updatePlaylistMetadata(spotifyConnection, user.syncJobs)
+
                 val playlistIds = spotifyConnection.getMyPlaylists().map { it.id }
 
                 // Determine living sync jobs, i.e. the playlists still registered to the users account
@@ -50,6 +52,14 @@ class ScheduledTasks(
         }
 
         logger.info("Sync Job Completed!")
+    }
+
+    private fun updatePlaylistMetadata(spotifyConnection: SpotifyConnection, syncJobs: Iterable<SyncJob>) {
+        for (syncJob in syncJobs) {
+            val spotifyPlaylist = spotifyConnection.getPlaylist(syncJob.targetPlaylistId)
+            syncJob.playlistName = spotifyPlaylist.name
+            syncJobRepository.save(syncJob)
+        }
     }
 
     fun doSync(spotifyConnection: SpotifyConnection, syncJobs: List<SyncJob>) = syncJobs.map { doSync(spotifyConnection, it) }
@@ -79,8 +89,8 @@ class ScheduledTasks(
             lastSync = Instant.now()
             playlistDeletionTime = null
             playlistDeletedByOwner = false
-            syncJobRepository.save(this)
         }
+        syncJobRepository.save(syncJob)
     }
 
     fun processDeadSyncJobs(syncJobs: List<SyncJob>) {

@@ -57,6 +57,8 @@ class SpotifyConnection(
     // region Playlist Management Operations
     fun getMyPlaylists(): List<Playlist> = getAllPaginatedItems(principalName, "/me/playlists?offset=0&limit=20")
 
+    fun getPlaylist(playlistId: String): Playlist = executeRequest(oAuth2AuthorizedClientManager, principalName, "/playlists/${playlistId}", null, HttpMethod.GET)
+
     fun createPlaylistForMyself(
             playlistName: String,
             playlistDescription: String,

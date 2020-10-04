@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne
 data class SyncJob(
         @Id
         var targetPlaylistId: String,
+        var playlistName: String,
         var amountToSync: Int,
         var lastSync: Instant?,
 
