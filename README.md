@@ -1,7 +1,7 @@
 # Spotify Sync
 
-This project will sync the last X saved tracks on your spotify account into a dedicated playlist,
-allowing you to only save this playlist on your phone instead of downloading all saved songs.
+This project will sync the last X liked songs on your spotify account into a dedicated playlist,
+allowing you to only save this playlist on your phone instead of downloading all liked songs.
 
 ## TODO
 * Sync Configuration UI

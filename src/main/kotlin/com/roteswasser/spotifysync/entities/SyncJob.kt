@@ -18,6 +18,9 @@ data class SyncJob(
         var playlistDeletedByOwner: Boolean,
         var playlistDeletionTime: Instant?,
 
+        var syncPausedByOwner: Boolean,
+        var syncPauseTime: Instant?,
+
         @ManyToOne var owner: SpotifySyncUser
 ) {
     override fun equals(other: Any?) = other is SyncJob && other.targetPlaylistId == targetPlaylistId

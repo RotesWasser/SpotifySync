@@ -1,7 +1,6 @@
 package com.roteswasser.spotifysync.controllers
 
 import com.roteswasser.spotifysync.oauth.OAuth2SpotifySyncUser
-import com.roteswasser.spotifysync.SpotifyConnection
 import com.roteswasser.spotifysync.SpotifyConnectionBuilder
 import com.roteswasser.spotifysync.entities.SyncJob
 import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
@@ -31,7 +30,9 @@ class ConfigurationController(
 
         val user = userRepository.findById(principal.name).get()
 
-        model["syncJobs"] = user.syncJobs
+        model["activeSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner }
+        model["pausedSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner && it.syncPausedByOwner }
+        model["inactiveSyncJobs"] = user.syncJobs.filter { it.playlistDeletedByOwner }
         model["createSyncJobFormData"] = CreateNewSyncJobFormData(50)
 
         return "configuration"
@@ -46,9 +47,9 @@ class ConfigurationController(
         val spotifyConnection = spotifyConnectionBuilder.getClient(user.id)
 
         val createdPlaylist = spotifyConnection.createPlaylistForMyself(
-                playlistName = "Most Recent ${createSyncJobFormData.amount} Saved Songs",
+                playlistName = "Most Recent ${createSyncJobFormData.amount} Liked Songs",
                 playlistDescription = "This playlist is managed automatically by the Spotify Sync application. \n" +
-                        " It contains the most recent ${createSyncJobFormData.amount} Songs from your saved songs."
+                        " It contains your most recent ${createSyncJobFormData.amount} liked songs."
         )
 
         val syncJob = SyncJob(
@@ -58,6 +59,8 @@ class ConfigurationController(
                 lastSync = null,
                 playlistDeletedByOwner = false,
                 playlistDeletionTime = null,
+                syncPausedByOwner = false,
+                syncPauseTime = null,
                 owner = user)
 
         syncJobRepository.save(syncJob)

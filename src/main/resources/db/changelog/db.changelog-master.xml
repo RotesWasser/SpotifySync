@@ -23,6 +23,10 @@
                 <constraints nullable="false"/>
             </column>
 
+            <column name="amount_to_sync" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+
             <column name="last_sync" type="TIMESTAMP">
                 <constraints nullable="true" />
             </column>
@@ -35,8 +39,12 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="amount_to_sync" type="INTEGER">
+            <column name="sync_paused_by_owner" type="BOOL">
                 <constraints nullable="false"/>
+            </column>
+
+            <column name="sync_pause_time" type="TIMESTAMP">
+                <constraints nullable="true" />
             </column>
 
             <column name="owner_id" type="VARCHAR(255)">

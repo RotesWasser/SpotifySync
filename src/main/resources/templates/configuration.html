@@ -4,6 +4,21 @@
 
 <head th:insert="fragments/common :: commonHead"></head>
 
+<style>
+    .card-header .bi {
+        transition: .3s transform ease-in-out;
+    }
+
+    .card-header.collapsed .bi {
+        transform: rotate(90deg);
+    }
+
+    .row {
+        margin-bottom: 15px;
+        margin-top: 15px;
+    }
+</style>
+
 <body>
 <div th:replace="fragments/header :: header">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
@@ -11,46 +26,70 @@
     </nav>
 </div>
 
-<p>You currently have <span th:text="${#lists.size(syncJobs)}">Count</span> sync jobs configured</p>
+<div class="container">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-10">
+            <div class="card">
+                <h5 class="card-header" data-toggle="collapse" data-target="#activeSyncJobsBody">
+                    <a href="#">
+                        Active Synchronized Playlists
+                        <span class="badge badge-primary" th:text="${#lists.size(activeSyncJobs)}">5</span>
 
-<div id="syncJobList">
-    <div>
-        <!-- Existing Sync Jobs -->
-        <table>
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Amount</td>
-                    <td>Last sync time</td>
-                    <td>Target Deleted?</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="syncJob : ${syncJobs}">
-                    <!-- Errors here happen because of https://youtrack.jetbrains.com/issue/IDEA-132738
-                         still applying to iteration -->
-                    <td th:text="${syncJob.playlistName}">Most recent XXX Songs placeholder</td>
-                    <td th:text="${syncJob.amountToSync}">250</td>
-                    <td th:text="${syncJob.lastSync}">5 minutes ago</td>
-                    <td th:text="${syncJob.playlistDeletedByOwner}">false</td>
-                </tr>
-            </tbody>
-        </table>
-
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down float-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </a>
+                </h5>
+                <div id="activeSyncJobsBody" class="collapse show">
+                    <div class="card-body">
+                        <!-- Existing Sync Jobs -->
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <td>Name</td>
+                                    <td>Amount</td>
+                                    <td>Last sync time</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="syncJob : ${activeSyncJobs}">
+                                    <!-- Errors here happen because of https://youtrack.jetbrains.com/issue/IDEA-132738
+                                         still applying to iteration -->
+                                    <td th:text="${syncJob.playlistName}">Most recent XXX Songs placeholder</td>
+                                    <td th:text="${syncJob.amountToSync}">250</td>
+                                    <td th:text="${syncJob.lastSync}">5 minutes ago</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div>
-        <h5>Create new Sync Job</h5>
-        <!-- New Sync Job -->
-        <form action="#" method="post" th:action="@{/configuration}" th:object="${createSyncJobFormData}">
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <div class="card">
+                <h5 class="card-header">New Synchronized Playlist</h5>
+                <div class="card-body">
+                    <form id="newSyncJobForm" action="#" method="post" th:action="@{/configuration}" th:object="${createSyncJobFormData}">
+                        <div class="form-group">
+                            <label for="source">Source</label>
+                            <input id="source" class="form-control" value="Liked Songs" type="text" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="amount">Amount to Sync</label>
+                            <input id="amount" class="form-control" form="newSyncJobForm" th:field="*{amount}" th:object="${createSyncJobFormData}" type="number">
+                        </div>
 
-            <label for="amount">Amount of Songs to synchronize</label>
-            <input id="amount" th:field="*{amount}" type="number">
-
-            <button type="submit">Set up sync job!</button>
-        </form>
-
+                        <button class="btn btn-primary" form="newSyncJobForm" type="submit">Create Synchronized Playlist</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
+
+
 </div>
 
 <!--/*/ <th:block th:replace="fragments/common :: commonScripts"></th:block> /*/-->
