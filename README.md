@@ -4,8 +4,9 @@ This project will sync the last X liked songs on your spotify account into a ded
 allowing you to only save this playlist on your phone instead of downloading all liked songs.
 
 ## TODO
+* Move actual sync behind a queue of sync requests
 * Sync Configuration UI
-    * Management of existing sync jobs
+    * Allow pausing existing sync jobs
     * Manual trigger of a sync
     * ~~Creation of sync jobs~~
 * Handling of sync failures (e-mail on token expiry, etc.)
