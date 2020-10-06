@@ -3,6 +3,7 @@ package com.roteswasser.spotifysync.controllers
 import com.roteswasser.spotifysync.oauth.OAuth2SpotifySyncUser
 import com.roteswasser.spotifysync.SpotifyConnectionBuilder
 import com.roteswasser.spotifysync.entities.SyncJob
+import com.roteswasser.spotifysync.extensions.formatAsAgo
 import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
 import com.roteswasser.spotifysync.repositories.SyncJobRepository
 import org.springframework.security.core.context.SecurityContextHolder
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.servlet.view.RedirectView
+import java.time.Duration
+import java.time.Instant
 
 @Controller
 class ConfigurationController(
@@ -30,9 +33,11 @@ class ConfigurationController(
 
         val user = userRepository.findById(principal.name).get()
 
-        model["activeSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner && !it.syncPausedByOwner }
-        model["pausedSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner && it.syncPausedByOwner }
-        model["inactiveSyncJobs"] = user.syncJobs.filter { it.playlistDeletedByOwner }
+        val now = Instant.now()
+
+        model["activeSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner && !it.syncPausedByOwner }.map { UISyncJobRepresentation.fromSyncJob(it, now)}
+        model["pausedSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner && it.syncPausedByOwner }.map { UISyncJobRepresentation.fromSyncJob(it, now)}
+        model["inactiveSyncJobs"] = user.syncJobs.filter { it.playlistDeletedByOwner }.map { UISyncJobRepresentation.fromSyncJob(it, now)}
         model["createSyncJobFormData"] = CreateNewSyncJobFormData(50)
 
         return "configuration"
@@ -71,4 +76,23 @@ class ConfigurationController(
     data class CreateNewSyncJobFormData(
             var amount: Int
     )
+
+    data class UISyncJobRepresentation (
+            val syncJob: SyncJob,
+            val formattedLastSync: String
+    ) {
+        companion object {
+            fun fromSyncJob(syncJob: SyncJob, currentTime: Instant) = UISyncJobRepresentation(
+                    syncJob,
+                    formatAgo(syncJob, currentTime)
+            )
+
+            private fun formatAgo(syncJob: SyncJob, currentTime: Instant) : String {
+                return if (syncJob.lastSync == null)
+                    "never"
+                else
+                    Duration.between(syncJob.lastSync, currentTime).formatAsAgo()
+            }
+        }
+    }
 }
