@@ -30,7 +30,7 @@ class ConfigurationController(
 
         val user = userRepository.findById(principal.name).get()
 
-        model["activeSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner }
+        model["activeSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner && !it.syncPausedByOwner }
         model["pausedSyncJobs"] = user.syncJobs.filter { !it.playlistDeletedByOwner && it.syncPausedByOwner }
         model["inactiveSyncJobs"] = user.syncJobs.filter { it.playlistDeletedByOwner }
         model["createSyncJobFormData"] = CreateNewSyncJobFormData(50)

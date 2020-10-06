@@ -13,7 +13,7 @@
             </svg>
         </a>
     </h5>
-    <div id="activeSyncJobsBody" th:id="${expandTarget}" class="collapse show" th:class="${expandByDefault? 'collapse show' : 'collapse'}">
+    <div id="activeSyncJobsBody" th:id="${expandTarget}" class="collapse show" th:class="${expandByDefault && #lists.size(jobList) > 0? 'collapse show' : 'collapse'}">
         <div class="card-body">
             <!-- Existing Sync Jobs -->
             <table class="table">
