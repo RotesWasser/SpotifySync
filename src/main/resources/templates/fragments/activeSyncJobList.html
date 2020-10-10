@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<table class="table" th:fragment="activeSyncJobList(jobList)">
+    <thead>
+    <tr>
+        <td>Name</td>
+        <td>Amount</td>
+        <td>Last sync time</td>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="syncJob : ${jobList}">
+        <!-- Errors here happen because of https://youtrack.jetbrains.com/issue/IDEA-132738
+             still applying to iteration -->
+        <td th:text="${syncJob.syncJob.playlistName}">Most recent XXX Songs</td>
+        <td th:text="${syncJob.syncJob.amountToSync}">123</td>
+        <td th:text="${syncJob.formattedLastSync}">5 minutes ago</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
