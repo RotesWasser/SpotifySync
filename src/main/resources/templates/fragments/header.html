@@ -25,9 +25,9 @@
         <ul class="navbar-nav ml-auto">
             <li class="nav-item"
                 th:class="'nav-item ' + ${#httpServletRequest.requestURI == '/login' ? 'active' : ''}">
-            <a th:if="${isSignedIn}" class="nav-link" href="/logout">
-                    Logout <span th:text="${displayName}">Name</span>
-                </a>
+                <form th:if="${isSignedIn}" action="#" th:action="@{/logout}" method="POST">
+                    <button class="btn btn-link nav-link" type="submit">Logout <span th:text="${displayName}">Name</span></button>
+                </form>
                 <a th:unless="${isSignedIn}" class="nav-link" href="/login">
                     Login
                 </a>
