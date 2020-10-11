@@ -26,9 +26,7 @@ class CustomLoginPage {
     }
 
     @PostMapping("/logout")
-    fun customLogout(request: HttpServletRequest, response: HttpServletResponse, model: Model): RedirectView {
-        model["isSignOut"] = true
-
+    fun customLogout(request: HttpServletRequest, response: HttpServletResponse): RedirectView {
         val auth = SecurityContextHolder.getContext().authentication
         auth?.let { SecurityContextLogoutHandler().logout(request, response, auth) }
 
