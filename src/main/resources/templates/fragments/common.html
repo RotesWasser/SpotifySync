@@ -3,6 +3,22 @@
 <head th:fragment="commonHead">
     <title>Playlist Mirror</title>
     <link rel="stylesheet" th:href="@{/webjars/bootstrap/4.5.2/css/bootstrap.css}">
+
+    <style>
+        .loginForm {
+            min-width: 800px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @media (max-width: 767.98px) {
+            .loginForm {
+                min-width: 90%;
+            }
+        }
+    </style>
 </head>
 
 <body th:fragment="commonScripts">

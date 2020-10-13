@@ -2,22 +2,67 @@
 
 <html xmlns:th="http://www.thymeleaf.org">
 
-<head th:insert="fragments/common :: commonHead"></head>
+<head th:insert="fragments/common :: commonHead">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
 
 <body>
 <div th:replace="fragments/header :: header">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">SpotifySync</a>
+        <a class="navbar-brand" href="/">Playlist Mirror</a>
     </nav>
 </div>
 
-<h1>Log in</h1>
+<div class="container card" style="margin-top: 3rem;">
+    <div class="row align-items-center">
+        <div class="col-lg-6">
+            <h3>Explanation of Required Permissions</h3>
 
-<p th:if="${isSignOut}">Signed Out successfully</p>
+            <h5>View your Spotify account data</h5>
+            <p><b>Your email</b></p>
+            <ul>
+                <li>As this app becomes basically once you set it up, it otherwise would not be able to
+                    notify you about errors like expired Spotify account access.</li>
+            </ul>
 
-<a th:href="${loginLink}">Login to Spotify here!</a>
+            <p><b>Your name and username, your profile picture, how many followers you have on Spotify and your public playlists</b></p>
+            <ul>
+                <li>(User-) name to display it to you on the website so you know who you are signed in as.</li>
+                <li>Playlist access to see whether you deleted a mirror playlist, so the app can stop mirroring.</li>
+            </ul>
+
+            <h5>View your activity on Spotify</h5>
+            <p><b>What you've saved in Your Library</b></p>
+            <ul>
+                <li>Without knowing what's in your library in the first place, the app can't mirror it to another playlist :)</li>
+            </ul>
+            <p><b>Playlists you've made and playlists you follow</b></p>
+            <ul>
+                <li>To check whether you deleted a mirror playlist, so the app can stop mirroring.</li>
+            </ul>
+
+            <h5>Take actions in Spotify on your behalf</h5>
+            <p><b>Create, edit and follow private playlists</b></p>
+            <ul>
+                <li>To create new mirror playlists and be able to write songs to them.</li>
+            </ul>
+
+
+        </div>
+        <div class="col-lg-6 text-center">
+            <a th:href="${loginLink}">
+                <button class="btn btn-primary">Sign in with Spotify</button>
+            </a>
+        </div>
+    </div>
+</div>
 
 <!--/*/ <th:block th:replace="fragments/common :: commonScripts"></th:block> /*/-->
+
+<script th:remove="all" src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script th:remove="all" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script th:remove="all" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+
 
 </body>
 
