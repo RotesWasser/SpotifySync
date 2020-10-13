@@ -22,7 +22,7 @@
 <body>
 <div th:replace="fragments/header :: header">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">SpotifySync</a>
+        <a class="navbar-brand" href="/">Playlist Mirror</a>
     </nav>
 </div>
 
@@ -51,7 +51,7 @@
     <div class="row justify-content-center">
         <div class="col-10">
             <div class="card">
-                <h5 class="card-header">New Synchronized Playlist</h5>
+                <h5 class="card-header">New Mirrored Playlist</h5>
                 <div class="card-body">
                     <form id="newSyncJobForm" action="#" method="post" th:action="@{/configuration}" th:object="${createSyncJobFormData}">
                         <div class="form-group">
@@ -59,11 +59,11 @@
                             <input id="source" class="form-control" value="Liked Songs" type="text" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="amount">Amount to Sync</label>
+                            <label for="amount">Amount to Mirror</label>
                             <input id="amount" class="form-control" form="newSyncJobForm" th:field="*{amount}" th:object="${createSyncJobFormData}" type="number">
                         </div>
 
-                        <button class="btn btn-primary" form="newSyncJobForm" type="submit">Create Synchronized Playlist</button>
+                        <button class="btn btn-primary" form="newSyncJobForm" type="submit">Create Mirrored Playlist</button>
                     </form>
                 </div>
             </div>

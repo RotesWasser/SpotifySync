@@ -1,25 +1,94 @@
 <!DOCTYPE html>
 
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" style="scroll-behavior: smooth">
 
-<head th:insert="fragments/common :: commonHead"></head>
+<head th:insert="fragments/common :: commonHead">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+</head>
 
 <body>
 <div th:replace="fragments/header :: header">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-        <a class="navbar-brand" href="/">SpotifySync</a>
+        <a class="navbar-brand" href="/">Playlist Mirror</a>
     </nav>
 </div>
 
-<p>This application allows you to synchronize your last X liked Spotify songs to a playlist!</p>
-
-<div th:if="${isSignedIn}">
-    <div th:if="${noSyncJobConfigured}">
-        Hi! You don't yet have a sync job configured. Without doing so, no playlist sync occurs!
+<div class="container-fluid" style="background: rgb(220, 220, 220); padding-top: 12rem; padding-bottom: 12rem;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6">
+                <h1>Playlist Mirror</h1>
+                <p>Save storage space on your phone by only downloading an always up-to-date mirror-playlist of your latest liked Spotify songs instead of
+                    all of them!</p>
+                <div th:unless="${isSignedIn}" style="margin-top: 3rem;">
+                    <a th:href="@{/configuration}"><button class="btn btn-primary">Get Started Now</button></a>
+                </div>
+                <div th:if="${isSignedIn}" style="margin-top: 3rem;">
+                    <a th:href="@{/configuration}"><button class="btn btn-primary">Set-up Mirrored Playlists</button></a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <h1>TODO: Great Animation that showcases the product</h1>
+            </div>
+        </div>
     </div>
 </div>
 
+<div id="learn-more" class="container" style="margin-top: 6rem;">
+    <div class="row align-items-start">
+        <div class="col-lg-12">
+            <h2>3 Simple Steps</h2>
+        </div>
+    </div>
+    <div class="row align-items-end">
+        <div class="col-lg-4">
+            <p>1. Sign into this website <span th:if="${isSignedIn}">&#x2714;</span></p>
+
+            <div th:unless="${isSignedIn}" class="d-block d-sm-block d-lg-none">
+                <a th:href="@{/login}">
+                    <button class="btn btn-primary">Sign in with Spotify</button>
+                </a>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <p>2. Create a mirror-playlist of your most recent liked songs, which will be kept
+            up-to-date automagically by this website.</p>
+
+            <div class="d-block d-sm-block d-lg-none">
+                <a th:if="${isSignedIn}" th:href="@{/configuration}">
+                    <button class="btn btn-primary">Set-up Mirrored Playlists</button>
+                </a>
+
+                <button th:unless="${isSignedIn}" class="btn btn-secondary" disabled>Set-up Mirrored Playlists</button>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <p>3. Instead of saving all liked songs on your phone, only save the new always up-to-date playlist
+            of your most recently liked songs.</p>
+        </div>
+    </div>
+    <div class="row align-items-center">
+        <div class="col-lg-4 d-none d-lg-block">
+            <a th:unless="${isSignedIn}" th:href="@{/login}">
+                <button class="btn btn-primary">Sign in with Spotify</button>
+            </a>
+        </div>
+        <div class="col-lg-4 d-none d-lg-block">
+            <a th:if="${isSignedIn}" th:href="@{/configuration}">
+                <button class="btn btn-primary">Set-up Mirrored Playlists</button>
+            </a>
+
+            <button th:unless="${isSignedIn}" class="btn btn-secondary" disabled>Set-up Mirrored Playlists</button>
+        </div>
+    </div>
+</div>
+
+
 <!--/*/ <th:block th:replace="fragments/common :: commonScripts"></th:block> /*/-->
+
+<script th:remove="all" src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script th:remove="all" src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script th:remove="all" src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 
 </body>
 
