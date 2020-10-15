@@ -7,6 +7,21 @@
 </head>
 
 <body>
+<style>
+    .card-header .bi {
+        transition: .3s transform ease-in-out;
+    }
+
+    .card-header.collapsed .bi {
+        transform: rotate(90deg);
+    }
+
+    .row {
+        margin-bottom: 15px;
+        margin-top: 15px;
+    }
+</style>
+
 <div th:replace="fragments/header :: header">
     <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
         <a class="navbar-brand" href="/">Playlist Mirror</a>
@@ -14,40 +29,90 @@
 </div>
 
 <div class="container card" style="margin-top: 3rem;">
-    <div class="row align-items-center">
-        <div class="col-lg-6">
+    <div class="row">
+        <div class="col-lg-12">
             <h3>Explanation of Required Permissions</h3>
+        </div>
 
-            <h5>View your Spotify account data</h5>
-            <p><b>Your email</b></p>
-            <ul>
-                <li>As this app becomes basically once you set it up, it otherwise would not be able to
-                    notify you about errors like expired Spotify account access.</li>
-            </ul>
+    </div>
+    <div class="row align-items-center">
+        <div class="col-lg-6" id="permissionsAccordion">
+            <div class="card">
+                <h5 class="card-header" id="infoAccountData" data-toggle="collapse"
+                    data-target="#infoAccountDataCollapse">
+                    <a href="#">
+                        View your Spotify account data
 
-            <p><b>Your name and username, your profile picture, how many followers you have on Spotify and your public playlists</b></p>
-            <ul>
-                <li>(User-) name to display it to you on the website so you know who you are signed in as.</li>
-                <li>Playlist access to see whether you deleted a mirror playlist, so the app can stop mirroring.</li>
-            </ul>
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down float-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </a>
+                </h5>
 
-            <h5>View your activity on Spotify</h5>
-            <p><b>What you've saved in Your Library</b></p>
-            <ul>
-                <li>Without knowing what's in your library in the first place, the app can't mirror it to another playlist :)</li>
-            </ul>
-            <p><b>Playlists you've made and playlists you follow</b></p>
-            <ul>
-                <li>To check whether you deleted a mirror playlist, so the app can stop mirroring.</li>
-            </ul>
+                <div id="infoAccountDataCollapse" class="collapse show" data-parent="#permissionsAccordion">
+                    <div class="card-body">
+                        <p><b>Your email</b></p>
+                        <ul>
+                            <li>As this app becomes basically once you set it up, it otherwise would not be able to
+                                notify you about errors like expired Spotify account access.</li>
+                        </ul>
 
-            <h5>Take actions in Spotify on your behalf</h5>
-            <p><b>Create, edit and follow private playlists</b></p>
-            <ul>
-                <li>To create new mirror playlists and be able to write songs to them.</li>
-            </ul>
+                        <p><b>Your name and username, your profile picture, how many followers you have on Spotify and your public playlists</b></p>
+                        <ul>
+                            <li>(User-) name to display it to you on the website so you know who you are signed in as.</li>
+                            <li>Playlist access to see whether you deleted a mirror playlist, so the app can stop mirroring.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
 
+            <div class="card">
+                <h5 class="card-header" id="infoActivity" data-toggle="collapse"
+                    data-target="#infoActivityCollapse">
+                    <a href="#">
+                        View your activity on Spotify
 
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down float-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </a>
+                </h5>
+
+                <div id="infoActivityCollapse" class="collapse" data-parent="#permissionsAccordion">
+                    <div class="card-body">
+                        <p><b>What you've saved in Your Library</b></p>
+                        <ul>
+                            <li>Without knowing what's in your library in the first place, the app can't mirror it to another playlist :)</li>
+                        </ul>
+                        <p><b>Playlists you've made and playlists you follow</b></p>
+                        <ul>
+                            <li>To check whether you deleted a mirror playlist, so the app can stop mirroring.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h5 class="card-header" id="infoActions" data-toggle="collapse"
+                    data-target="#infoActionsCollapse">
+                    <a href="#">
+                        Take actions in Spotify on your behalf
+
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-chevron-down float-right" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                    </a>
+                </h5>
+
+                <div id="infoActionsCollapse" class="collapse" data-parent="#permissionsAccordion">
+                    <div class="card-body">
+                        <p><b>Create, edit and follow private playlists</b></p>
+                        <ul>
+                            <li>To create new mirror playlists and be able to write songs to them.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="col-lg-6 text-center">
             <a th:href="${loginLink}">
