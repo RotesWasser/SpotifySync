@@ -1,7 +1,8 @@
-package com.roteswasser.spotifysync
+package com.roteswasser.spotifysync.synchronization.home
 
+import com.roteswasser.spotifysync.SpotifyConnection
+import com.roteswasser.spotifysync.SpotifyConnectionBuilder
 import com.roteswasser.spotifysync.algorithms.ListDiff
-import com.roteswasser.spotifysync.algorithms.computeLCS
 import com.roteswasser.spotifysync.entities.SyncJob
 import com.roteswasser.spotifysync.repositories.SpotifySyncUserRepository
 import com.roteswasser.spotifysync.repositories.SyncJobRepository
@@ -13,7 +14,7 @@ import java.time.Instant
 import javax.transaction.Transactional
 
 @Component
-class ScheduledTasks(
+class ScheduledJobs(
         private val syncJobRepository: SyncJobRepository,
         private val userRepository: SpotifySyncUserRepository,
         private val spotifyConnectionBuilder: SpotifyConnectionBuilder
