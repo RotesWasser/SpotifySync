@@ -13,22 +13,24 @@
     </nav>
 </div>
 
-<div class="container-fluid" style="background: rgb(220, 220, 220); padding-top: 12rem; padding-bottom: 12rem;">
+<div class="container-fluid" style="background: rgb(220, 220, 220); padding-top: 6rem; padding-bottom: 6rem;">
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6">
-                <h1>Playlist Mirror</h1>
-                <p>Save storage space on your phone by only downloading an always up-to-date mirror-playlist of your latest liked Spotify songs instead of
-                    all of them!</p>
+        <div class="row justify-content-center">
+            <div class="col-lg-12">
+                <blockquote class="blockquote">
+                <h1><b>Save storage space on your phone by downloading an always up-to-date mirror-playlist of your latest liked Spotify songs instead of
+                    all of them!</b></h1>
+                </blockquote>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-4">
                 <div th:unless="${isSignedIn}" style="margin-top: 3rem;">
-                    <a th:href="@{/configuration}"><button class="btn btn-primary">Get Started Now</button></a>
+                    <a th:href="@{/configuration}"><button class="btn btn-primary btn-block">Get Started Now</button></a>
                 </div>
                 <div th:if="${isSignedIn}" style="margin-top: 3rem;">
-                    <a th:href="@{/configuration}"><button class="btn btn-primary">Set-up Mirrored Playlists</button></a>
+                    <a th:href="@{/configuration}"><button class="btn btn-primary btn-block">Set up Mirrored Playlists</button></a>
                 </div>
-            </div>
-            <div class="col-lg-6 d-none d-lg-block">
-                <h1>TODO: Great Animation that showcases the product</h1>
             </div>
         </div>
     </div>
@@ -45,7 +47,7 @@
                     <div class="container">
                         <div class="row align-items-center">
                             <div class="col-lg-9">
-                                1. Log into this website
+                                1. Log in to this website.
                             </div>
 
                             <div class="col-lg-3">
@@ -62,15 +64,19 @@
                 <li class="list-group-item">
                     <div class="container">
                         <div class="row align-items-center">
-                            <div class="col-lg-9" th:class="${isSignedIn? 'col-lg-9' : 'col-lg-12'}">
+                            <div class="col-lg-9">
                                 2. Create a mirror-playlist of your most recent liked songs, which will be kept
                                 up-to-date automagically by this website.
                             </div>
 
                             <div th:if="${isSignedIn}" class="col-lg-3">
                                 <a th:href="@{/configuration}">
-                                    <button class="btn btn-primary btn-block">Set-up Mirrored Playlists</button>
+                                    <button class="btn btn-primary btn-block">Set up Mirrored Playlists</button>
                                 </a>
+                            </div>
+
+                            <div th:unless="${isSignedIn}" class="col-lg-3">
+                                <button class="btn btn-secondary btn-block" disabled>Set up Mirrored Playlists</button>
                             </div>
                         </div>
                     </div>
