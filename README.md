@@ -8,10 +8,7 @@ allowing you to only save this playlist on your phone instead of downloading all
 * Sync Configuration UI
     * Allow pausing existing sync jobs
     * Manual trigger of a sync
-    * ~~Creation of sync jobs~~
 * Handling of sync failures (e-mail on token expiry, etc.)
-* Customized landing and login pages
-* CSRF Protection
 * Sanitization of Data displayed in the config UI originating from Spotify
     * Prevent XSS and other injections
 * Increasing robustness
