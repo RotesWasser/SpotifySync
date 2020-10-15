@@ -33,3 +33,6 @@ spring:
 
 spotifysync:
   apiendpoint: "https://api.spotify.com/v1/"
+  # Time a user has to wait after a sync to trigger a manual one ISO-8601
+  wait-between-manual-syncs: "PT0H5M"
+  deployment: "hosted"
