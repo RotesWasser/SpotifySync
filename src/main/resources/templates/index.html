@@ -35,51 +35,59 @@
 </div>
 
 <div id="learn-more" class="container" style="margin-top: 6rem;">
-    <div class="row align-items-start">
-        <div class="col-lg-12">
-            <h2>3 Simple Steps</h2>
-        </div>
-    </div>
-    <div class="row align-items-end">
-        <div class="col-lg-4">
-            <p>1. Sign into this website <span th:if="${isSignedIn}">&#x2714;</span></p>
-
-            <div th:unless="${isSignedIn}" class="d-block d-sm-block d-lg-none">
-                <a th:href="@{/login}">
-                    <button class="btn btn-primary">Sign in with Spotify</button>
-                </a>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <p>2. Create a mirror-playlist of your most recent liked songs, which will be kept
-            up-to-date automagically by this website.</p>
-
-            <div class="d-block d-sm-block d-lg-none">
-                <a th:if="${isSignedIn}" th:href="@{/configuration}">
-                    <button class="btn btn-primary">Set-up Mirrored Playlists</button>
-                </a>
-
-                <button th:unless="${isSignedIn}" class="btn btn-secondary" disabled>Set-up Mirrored Playlists</button>
-            </div>
-        </div>
-        <div class="col-lg-4">
-            <p>3. Instead of saving all liked songs on your phone, only save the new always up-to-date playlist
-            of your most recently liked songs.</p>
-        </div>
-    </div>
     <div class="row align-items-center">
-        <div class="col-lg-4 d-none d-lg-block">
-            <a th:unless="${isSignedIn}" th:href="@{/login}">
-                <button class="btn btn-primary">Sign in with Spotify</button>
-            </a>
+        <div class="col-lg-12">
+            <h2>Three Simple Steps</h2>
         </div>
-        <div class="col-lg-4 d-none d-lg-block">
-            <a th:if="${isSignedIn}" th:href="@{/configuration}">
-                <button class="btn btn-primary">Set-up Mirrored Playlists</button>
-            </a>
+        <div class="col-lg-12">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-9">
+                                1. Log into this website
+                            </div>
 
-            <button th:unless="${isSignedIn}" class="btn btn-secondary" disabled>Set-up Mirrored Playlists</button>
+                            <div class="col-lg-3">
+                                <div th:if="${isSignedIn}" class="text-center">&#x2714;</div>
+                                <span th:unless="${isSignedIn}">
+                                    <a th:href="@{/login}">
+                                        <button class="btn btn-primary btn-block">Log in with Spotify</button>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-9" th:class="${isSignedIn? 'col-lg-9' : 'col-lg-12'}">
+                                2. Create a mirror-playlist of your most recent liked songs, which will be kept
+                                up-to-date automagically by this website.
+                            </div>
+
+                            <div th:if="${isSignedIn}" class="col-lg-3">
+                                <a th:href="@{/configuration}">
+                                    <button class="btn btn-primary btn-block">Set-up Mirrored Playlists</button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="container">
+                        <div class="row align-items-center">
+                            <div class="col-lg-12">
+                                3. Instead of saving all liked songs on your phone, save your newly created mirror playlist.
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
         </div>
+    </div>
+
     </div>
 </div>
 
