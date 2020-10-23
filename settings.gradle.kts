@@ -1,4 +1,5 @@
 rootProject.name = "spotifysync"
 
-include("library")
+include("common")
 include("frontend")
+include("syncservice")

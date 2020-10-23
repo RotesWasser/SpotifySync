@@ -1,4 +1,4 @@
-package com.roteswasser.spotifysync
+package com.roteswasser.spotifysync.algorithms
 
 import com.roteswasser.spotifysync.algorithms.ListDiff
 import org.junit.jupiter.api.Assertions
