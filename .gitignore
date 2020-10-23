@@ -32,5 +32,8 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### App configuration files ###
 src/main/resources/application.properties
 /src/main/resources/application.yml
+/frontend/src/main/resources/application.yml
