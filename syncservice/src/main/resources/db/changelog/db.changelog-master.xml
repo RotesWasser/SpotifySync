@@ -1,0 +1,83 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.9.xsd">
+    <changeSet author="RotesWasser" id="1">
+        <createTable tableName="spotify_sync_user">
+            <column name="id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="spotify_sync_user_pkey"/>
+            </column>
+            <column name="display_name" type="VARCHAR(255)"/>
+            <column name="invalid_spotify_credentials" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createTable tableName="sync_job">
+            <column name="target_playlist_id" type="VARCHAR(255)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="sync_job_pkey"/>
+            </column>
+
+            <column name="playlist_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="amount_to_sync" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="last_sync" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="playlist_deleted_by_owner" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="playlist_deletion_time" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="sync_paused_by_owner" type="BOOL">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="sync_pause_time" type="TIMESTAMP">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="owner_id" type="VARCHAR(255)">
+                <constraints foreignKeyName="spotify_sync_user.id" nullable="false"/>
+            </column>
+
+        </createTable>
+
+        <createTable tableName="oauth2_authorized_client">
+            <column name="client_registration_id" type="VARCHAR(100)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="oauth2_authorized_client_pkey"/>
+            </column>
+            <column name="principal_name" type="VARCHAR(200)">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="oauth2_authorized_client_pkey"/>
+            </column>
+            <column name="access_token_type" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_token_value" type="BYTEA">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_token_issued_at" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="access_token_expires_at" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+            <column defaultValue="NULL::character varying" name="access_token_scopes" type="VARCHAR(1000)"/>
+            <column name="refresh_token_value" type="BYTEA"/>
+            <column name="refresh_token_issued_at" type="TIMESTAMP WITHOUT TIME ZONE"/>
+            <column defaultValueComputed="CURRENT_TIMESTAMP" name="created_at" type="TIMESTAMP WITHOUT TIME ZONE">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

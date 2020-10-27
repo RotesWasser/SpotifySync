@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <body>
-<!--/*@thymesVar id="name" type="com.roteswasser.spotifysync.ConfigTableType"*/-->
+<!--/*@thymesVar id="name" type="com.roteswasser.spotifysync.frontend.ConfigTableType"*/-->
 <div class="card" th:fragment="syncJobContainer(type, jobList, expandByDefault)" th:with="expandTarget=${type.name()} + 'body'">
     <h5 class="card-header" th:class="${expandByDefault && #lists.size(jobList) > 0? 'card-header' : 'card-header collapsed'}"
         data-toggle="collapse" th:data-target="${#lists.size(jobList) > 0? '#' + expandTarget : 'none'}" data-target="#activeSyncJobsBody">
         <a href="#">
-            <span th:if="${type == T(com.roteswasser.spotifysync.ConfigTableType).Active}">Active</span>
-            <span th:if="${type == T(com.roteswasser.spotifysync.ConfigTableType).Paused}">Paused</span>
-            <span th:if="${type == T(com.roteswasser.spotifysync.ConfigTableType).Inactive}">Inactive</span>
+            <span th:if="${type == T(com.roteswasser.spotifysync.frontend.ConfigTableType).Active}">Active</span>
+            <span th:if="${type == T(com.roteswasser.spotifysync.frontend.ConfigTableType).Paused}">Paused</span>
+            <span th:if="${type == T(com.roteswasser.spotifysync.frontend.ConfigTableType).Inactive}">Inactive</span>
 
             <span class="badge badge-primary" th:text="${#lists.size(jobList)}">5</span>
 
@@ -23,15 +23,15 @@
          class="collapse show"
          th:class="${expandByDefault && #lists.size(jobList) > 0? 'collapse show' : 'collapse'}">
         <div class="card-body">
-            <div th:if="${type == T(com.roteswasser.spotifysync.ConfigTableType).Active}">
+            <div th:if="${type == T(com.roteswasser.spotifysync.frontend.ConfigTableType).Active}">
                 <table th:replace="fragments/syncJobLists :: activeSyncJobList(${jobList})" class="table"></table>
             </div>
 
-            <div th:if="${type == T(com.roteswasser.spotifysync.ConfigTableType).Paused}">
+            <div th:if="${type == T(com.roteswasser.spotifysync.frontend.ConfigTableType).Paused}">
                 <table th:replace="fragments/syncJobLists :: pausedSyncJobList(${jobList})" class="table"></table>
             </div>
 
-            <div th:if="${type == T(com.roteswasser.spotifysync.ConfigTableType).Inactive}">
+            <div th:if="${type == T(com.roteswasser.spotifysync.frontend.ConfigTableType).Inactive}">
                 <table th:replace="fragments/syncJobLists :: inactiveSyncJobList(${jobList})" class="table"></table>
             </div>
         </div>
