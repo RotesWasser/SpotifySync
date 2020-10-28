@@ -39,6 +39,11 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
 }
 
+sourceSets.getByName("main") {
+    resources.srcDir("src/main/resources")
+    resources.srcDir("../migrations")
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }
