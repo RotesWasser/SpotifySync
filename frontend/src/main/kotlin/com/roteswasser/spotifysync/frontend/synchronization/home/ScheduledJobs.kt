@@ -1,5 +1,6 @@
 package com.roteswasser.spotifysync.frontend.synchronization.home
 
+import com.roteswasser.spotifysync.common.ISpotifyConnection
 import com.roteswasser.spotifysync.common.algorithms.ListDiff
 import com.roteswasser.spotifysync.common.entities.SyncJob
 import com.roteswasser.spotifysync.common.repositories.SpotifySyncUserRepository
@@ -43,7 +44,7 @@ class ScheduledJobs(
                 val deadSyncJobs = user.syncJobs.filter { it.targetPlaylistId !in playlistIds }
                 processDeadSyncJobs(deadSyncJobs)
 
-            } catch (ex: SpotifyConnection.SpotifyCredentialsException) {
+            } catch (ex: ISpotifyConnection.SpotifyCredentialsException) {
                 // Flag user account credentials as expired
                 user.apply {
                     invalidSpotifyCredentials = true
@@ -73,8 +74,8 @@ class ScheduledJobs(
         val playlistDiff = ListDiff.createFrom(itemsInPlaylist, latestSongs)
 
         // Coalesce into API Requests
-        val additionRequests = playlistDiff.additions.map { addition -> addition.elements.chunked(100).map { chunk -> SpotifyConnection.AdditionRequest(addition.position, chunk.map { it.uri }) } }.flatten()
-        val deletionBatches = playlistDiff.removals.map { SpotifyConnection.TrackDeletion(it.element.uri, listOf(it.position)) }.chunked(100)
+        val additionRequests = playlistDiff.additions.map { addition -> addition.elements.chunked(100).map { chunk -> ISpotifyConnection.AdditionRequest(addition.position, chunk.map { it.uri }) } }.flatten()
+        val deletionBatches = playlistDiff.removals.map { ISpotifyConnection.TrackDeletion(it.element.uri, listOf(it.position)) }.chunked(100)
 
         // Execute deletions
         var snapshotId: String? = null

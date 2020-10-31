@@ -1,5 +1,6 @@
 package com.roteswasser.spotifysync.frontend.synchronization.hosted
 
+import com.roteswasser.spotifysync.common.ISpotifyConnection
 import com.roteswasser.spotifysync.common.dto.ManualSyncTriggerResponse
 import com.roteswasser.spotifysync.common.entities.SyncJob
 import com.roteswasser.spotifysync.frontend.SpotifyConnection
@@ -36,7 +37,7 @@ class HostedSyncTrigger(
         if (response.statusCode() !in listOf(HttpStatus.OK, HttpStatus.CREATED)) {
             val statusCode = response.statusCode()
             val bodyAsString = response.bodyToMono<String>().block()!!
-            throw SpotifyConnection.ConnectionException("Failure during request", bodyAsString)
+            throw ISpotifyConnection.ConnectionException("Failure during request", bodyAsString)
         }
 
         val result = response.bodyToMono<ManualSyncTriggerResponse>().block()!!

@@ -1,7 +1,7 @@
 package com.roteswasser.spotifysync.frontend
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.roteswasser.spotifysync.common.ISpotifyConnection
 import net.minidev.json.JSONArray
 import net.minidev.json.JSONObject
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,7 +18,6 @@ import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.ExchangeStrategies
 import org.springframework.web.reactive.function.client.WebClient
 import org.springframework.web.reactive.function.client.bodyToMono
-import java.time.Instant
 
 @Component
 class SpotifyConnectionBuilder(
@@ -48,31 +47,31 @@ class SpotifyConnection(
         private val oAuth2AuthorizedClientManager: OAuth2AuthorizedClientManager,
         private val client: WebClient,
         private val principalName: String
-) {
+) : ISpotifyConnection {
 
     // region Saved Songs Operations
-    fun getMySavedSongs(limit: Int) = getPaginatedItems<SavedTrack, PaginatedResponse<SavedTrack>>(principalName, limit, "/me/tracks?offset=%d&limit=50")
+    override fun getMySavedSongs(limit: Int) = getPaginatedItems<ISpotifyConnection.SavedTrack, ISpotifyConnection.PaginatedResponse<ISpotifyConnection.SavedTrack>>(principalName, limit, "/me/tracks?offset=%d&limit=50")
     // endregion
 
     // region Playlist Management Operations
-    fun getMyPlaylists(): List<Playlist> = getAllPaginatedItems(principalName, "/me/playlists?offset=0&limit=20")
+    override fun getMyPlaylists(): List<ISpotifyConnection.Playlist> = getAllPaginatedItems(principalName, "/me/playlists?offset=0&limit=20")
 
-    fun getPlaylist(playlistId: String): Playlist = executeRequest(oAuth2AuthorizedClientManager, principalName, "/playlists/${playlistId}", null, HttpMethod.GET)
+    override fun getPlaylist(playlistId: String): ISpotifyConnection.Playlist = executeRequest(oAuth2AuthorizedClientManager, principalName, "/playlists/${playlistId}", null, HttpMethod.GET)
 
-    fun createPlaylistForMyself(
+    override fun createPlaylistForMyself(
             playlistName: String,
             playlistDescription: String,
-            public: Boolean = false,
-            collaborative: Boolean = false
+            public: Boolean,
+            collaborative: Boolean
     ) = createPlaylistForUser(principalName, playlistName, playlistDescription, public, collaborative)
 
-    fun createPlaylistForUser(
+    override fun createPlaylistForUser(
             userId: String,
             playlistName: String,
             playlistDescription: String,
-            public: Boolean = false,
-            collaborative: Boolean = false
-    ): Playlist {
+            public: Boolean,
+            collaborative: Boolean
+    ): ISpotifyConnection.Playlist {
         val playlistJsonObject = JSONObject().apply {
             put("name", playlistName)
             put("public", public)
@@ -94,28 +93,28 @@ class SpotifyConnection(
 
 
     // region Playlist Item Operations
-    fun getPlaylistItems(playlistId: String) = getAllPaginatedItems<PlaylistItem, PaginatedResponse<PlaylistItem>>(principalName, "/playlists/${playlistId}/tracks")
+    override fun getPlaylistItems(playlistId: String) = getAllPaginatedItems<ISpotifyConnection.PlaylistItem, ISpotifyConnection.PaginatedResponse<ISpotifyConnection.PlaylistItem>>(principalName, "/playlists/${playlistId}/tracks")
 
-    fun deletePlaylistItems(playlistId: String, deletions: List<TrackDeletion>, snapshot_id: String?) = executeRequest<PlaylistUpdateResponse>(
+    override fun deletePlaylistItems(playlistId: String, deletions: List<ISpotifyConnection.TrackDeletion>, snapshot_id: String?) = executeRequest<ISpotifyConnection.PlaylistUpdateResponse>(
             oAuth2AuthorizedClientManager,
             principalName,
             "/playlists/${playlistId}/tracks",
-            jacksonObjectMapper().writeValueAsString(DeletionRequest(snapshot_id, deletions)),
+            jacksonObjectMapper().writeValueAsString(ISpotifyConnection.DeletionRequest(snapshot_id, deletions)),
             HttpMethod.DELETE
     )
 
-    fun addPlaylistItems(playlistId: String, position: Int?, urisToAdd: List<String>) = executeRequest<String>(
+    override fun addPlaylistItems(playlistId: String, position: Int?, urisToAdd: List<String>) = executeRequest<String>(
             oAuth2AuthorizedClientManager,
             principalName,
             "playlists/${playlistId}/tracks",
-            jacksonObjectMapper().writeValueAsString(AdditionRequest(position, urisToAdd)),
+            jacksonObjectMapper().writeValueAsString(ISpotifyConnection.AdditionRequest(position, urisToAdd)),
             HttpMethod.POST
     )
 
-    fun replacePlaylistItems(
+    override fun replacePlaylistItems(
             playlistId: String,
             itemURIs: List<String>
-    ): PlaylistUpdateResponse {
+    ): ISpotifyConnection.PlaylistUpdateResponse {
         if (itemURIs.count() > 100)
             throw IllegalArgumentException("Spotify API only allows setting 100 items with replace.")
 
@@ -140,7 +139,7 @@ class SpotifyConnection(
     // endregion
 
     // region Request implementation
-    private inline fun <reified InnerItemType, reified PaginatedType : PaginatedResponse<InnerItemType>> getPaginatedItems(
+    private inline fun <reified InnerItemType, reified PaginatedType : ISpotifyConnection.PaginatedResponse<InnerItemType>> getPaginatedItems(
             principalName: String,
             limit: Int,
             urlFormatString: String
@@ -168,7 +167,7 @@ class SpotifyConnection(
         return fetchedItems
     }
 
-    private inline fun <reified InnerItemType, reified PaginatedType : PaginatedResponse<InnerItemType>> getAllPaginatedItems(
+    private inline fun <reified InnerItemType, reified PaginatedType : ISpotifyConnection.PaginatedResponse<InnerItemType>> getAllPaginatedItems(
             principalName: String,
             startURL: String): List<InnerItemType> {
         val fetchedItems = mutableListOf<InnerItemType>()
@@ -217,7 +216,7 @@ class SpotifyConnection(
         if (response.statusCode() !in listOf(HttpStatus.OK, HttpStatus.CREATED)) {
             val statusCode = response.statusCode()
             val bodyAsString = response.bodyToMono<String>().block()!!
-            throw ConnectionException("Failure during request", bodyAsString)
+            throw ISpotifyConnection.ConnectionException("Failure during request", bodyAsString)
         }
 
         return response.bodyToMono<T>().block()!!
@@ -225,58 +224,4 @@ class SpotifyConnection(
 
 
     // endregion
-
-    class ConnectionException(message: String, val body: String?) : Exception(message)
-
-    data class PaginatedResponse<T>(
-            val href: String,
-            val items: List<T>,
-            val next: String?,
-            val offset: Int,
-            val previous: String?,
-            val total: Int,
-            val limit: Int
-    )
-
-    data class Playlist(
-            val collaborative: Boolean,
-            val id: String,
-            val name: String
-    )
-
-    data class SavedTrack(
-            val added_at: Instant,
-            val track: Track
-    )
-
-    data class PlaylistItem(
-            val track: Track
-    )
-
-    data class Track(
-            val uri: String
-    )
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    data class DeletionRequest(
-            val snapshot_id: String?,
-            val tracks: List<TrackDeletion>
-    )
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    data class AdditionRequest(
-            val position: Int?,
-            val uris: List<String>
-    )
-
-    data class TrackDeletion(
-            val uri: String,
-            val positions: List<Int>
-    )
-
-    data class PlaylistUpdateResponse(
-            val snapshot_id: String
-    )
-
-    class SpotifyCredentialsException(message: String?) : Exception(message)
 }
