@@ -1,6 +1,5 @@
 package com.roteswasser.spotifysync.common.algorithms
 
-import com.roteswasser.spotifysync.common.algorithms.computeLCS
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 

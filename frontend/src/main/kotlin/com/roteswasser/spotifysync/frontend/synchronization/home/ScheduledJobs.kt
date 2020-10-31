@@ -1,11 +1,11 @@
 package com.roteswasser.spotifysync.frontend.synchronization.home
 
-import com.roteswasser.spotifysync.frontend.SpotifyConnection
-import com.roteswasser.spotifysync.frontend.SpotifyConnectionBuilder
 import com.roteswasser.spotifysync.common.algorithms.ListDiff
 import com.roteswasser.spotifysync.common.entities.SyncJob
 import com.roteswasser.spotifysync.common.repositories.SpotifySyncUserRepository
 import com.roteswasser.spotifysync.common.repositories.SyncJobRepository
+import com.roteswasser.spotifysync.frontend.SpotifyConnection
+import com.roteswasser.spotifysync.frontend.SpotifyConnectionBuilder
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled

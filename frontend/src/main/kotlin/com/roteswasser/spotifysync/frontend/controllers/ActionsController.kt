@@ -1,7 +1,7 @@
 package com.roteswasser.spotifysync.frontend.controllers
 
-import com.roteswasser.spotifysync.frontend.oauth.OAuth2SpotifySyncUser
 import com.roteswasser.spotifysync.common.repositories.SyncJobRepository
+import com.roteswasser.spotifysync.frontend.oauth.OAuth2SpotifySyncUser
 import com.roteswasser.spotifysync.frontend.synchronization.SyncTrigger
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -9,7 +9,6 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
-import java.time.DateTimeException
 import java.time.Instant
 import javax.servlet.http.HttpServletResponse
 import javax.transaction.Transactional

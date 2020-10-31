@@ -1,11 +1,11 @@
 package com.roteswasser.spotifysync.frontend.controllers
 
-import com.roteswasser.spotifysync.frontend.oauth.OAuth2SpotifySyncUser
-import com.roteswasser.spotifysync.frontend.SpotifyConnectionBuilder
 import com.roteswasser.spotifysync.common.entities.SyncJob
 import com.roteswasser.spotifysync.common.extensions.formatAsAgo
 import com.roteswasser.spotifysync.common.repositories.SpotifySyncUserRepository
 import com.roteswasser.spotifysync.common.repositories.SyncJobRepository
+import com.roteswasser.spotifysync.frontend.SpotifyConnectionBuilder
+import com.roteswasser.spotifysync.frontend.oauth.OAuth2SpotifySyncUser
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model

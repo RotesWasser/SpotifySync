@@ -1,8 +1,6 @@
 package com.roteswasser.spotifysync.common.extensions
 
-import java.lang.StringBuilder
 import java.time.Duration
-
 
 
 fun Duration.formatAsAgo(): String {

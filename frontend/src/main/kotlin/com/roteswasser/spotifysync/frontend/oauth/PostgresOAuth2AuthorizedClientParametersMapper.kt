@@ -7,7 +7,7 @@ import org.springframework.util.StringUtils
 import java.nio.charset.StandardCharsets
 import java.sql.Timestamp
 import java.sql.Types
-import java.util.ArrayList
+import java.util.*
 import java.util.function.Function
 
 class PostgresOAuth2AuthorizedClientParametersMapper : Function<JdbcOAuth2AuthorizedClientService.OAuth2AuthorizedClientHolder, List<SqlParameterValue>> {
