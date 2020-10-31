@@ -5,6 +5,7 @@ import com.roteswasser.spotifysync.frontend.synchronization.home.HomeSyncTrigger
 import com.roteswasser.spotifysync.frontend.synchronization.home.ScheduledJobs
 import com.roteswasser.spotifysync.frontend.synchronization.hosted.HostedSyncTrigger
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -32,7 +33,8 @@ class FrontendApplication {
             havingValue = "hosted"
     )
     @ConditionalOnMissingBean
-    fun hostedSyncTrigger(): SyncTrigger = HostedSyncTrigger()
+    fun hostedSyncTrigger(@Value("\${spotifysync.syncservicebaseurl}") baseURL: String): SyncTrigger
+            = HostedSyncTrigger(baseURL)
 
 
 }

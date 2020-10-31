@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User
 
 
 @EnableWebSecurity
-class OAuth2LoginSecurityConfig(private val customUserService: SpotifySyncUserService) : WebSecurityConfigurerAdapter() {
+class FrontendSecurityConfig(private val customUserService: SpotifySyncUserService) : WebSecurityConfigurerAdapter() {
 
     @Bean
     fun oAuth2AuthorizedClientService(jdbcOperations: JdbcOperations, clientRegistrationRepository: ClientRegistrationRepository): JdbcOAuth2AuthorizedClientService {
