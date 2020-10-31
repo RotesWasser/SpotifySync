@@ -36,7 +36,7 @@ class ScheduledJobs(
                 val playlistIds = spotifyConnection.getMyPlaylists().map { it.id }
 
                 // Determine living sync jobs, i.e. the playlists still registered to the users account
-                val livingSyncJobs = user.syncJobs.filter { it.targetPlaylistId in playlistIds }
+                val livingSyncJobs = user.syncJobs.filter { it.targetPlaylistId in playlistIds && !it.syncPausedByOwner }
                 doSync(spotifyConnection, livingSyncJobs)
 
                 // Determine dead sync jobs, those that aren't registered to the users account anymore
