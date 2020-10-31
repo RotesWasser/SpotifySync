@@ -21,22 +21,12 @@ class HostedSyncTrigger(
 ) : SyncTrigger {
     private val logger: Logger = LoggerFactory.getLogger(this.javaClass)
     private val client = WebClient.builder()
-            .exchangeStrategies(
-                    ExchangeStrategies.builder()
-                            .codecs { configurer: ClientCodecConfigurer ->
-                                configurer
-                                        .defaultCodecs()
-                                        .maxInMemorySize(16 * 1024 * 1024)
-                            }
-                            .build()
-            )
             .baseUrl(apiEndpoint)
             .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
             .build()
 
     override fun queueSync(toRun: SyncJob) {
-        logger.info("Requesting a manual sync of ${toRun.playlistName} (target id: ${toRun.targetPlaylistId}) from " +
-                "syncservice.")
+        logger.debug("Requesting a manual sync of target id ${toRun.targetPlaylistId} from syncservice.")
 
         val response = client.method(HttpMethod.POST)
                 .uri("/trigger/${toRun.targetPlaylistId}")
