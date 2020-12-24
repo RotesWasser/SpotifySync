@@ -66,7 +66,8 @@ class ConfigurationController(
                 playlistDeletionTime = null,
                 syncPausedByOwner = false,
                 syncPauseTime = null,
-                owner = user)
+                owner = user,
+                markedForImmediateSync = true)
 
         syncJobRepository.save(syncJob)
 

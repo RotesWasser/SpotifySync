@@ -47,6 +47,10 @@
                 <constraints nullable="true" />
             </column>
 
+            <column name="marked_for_immediate_sync" type="BOOL">
+                <constraints nullable="false" />
+            </column>
+
             <column name="owner_id" type="VARCHAR(255)">
                 <constraints foreignKeyName="spotify_sync_user.id" nullable="false"/>
             </column>
