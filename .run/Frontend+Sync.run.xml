@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Frontend+Sync" type="CompoundRunConfigurationType">
+    <toRun name="SyncServiceApplication" type="SpringBootApplicationConfigurationType" />
+    <toRun name="FrontendApplication" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
