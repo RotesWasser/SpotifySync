@@ -1,12 +1,16 @@
 package com.roteswasser.spotifysync.syncservice
 
 import com.roteswasser.spotifysync.common.repositories.SyncJobRepository
-import org.springframework.context.annotation.Bean
 import org.springframework.transaction.annotation.Isolation
 import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
+/**
+ * Coordinates access to the current set of queued syncs.
+ *
+ * All methods here need to be open for Spring AOP to be able to create a proxy class
+ */
 open class SyncCoordinator(
         private val syncJobRepository: SyncJobRepository
 ) {
@@ -20,7 +24,7 @@ open class SyncCoordinator(
         syncJobRepository.save(syncJob)
     }
 
-    fun enqueuePlaylistForSync(targetId: String) {
+    open fun enqueuePlaylistForSync(targetId: String) {
         currentlyQueuedSetLock.withLock {
             if (currentlyQueued.contains(targetId)) {
                 return@enqueuePlaylistForSync
